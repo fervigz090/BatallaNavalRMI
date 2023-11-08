@@ -9,6 +9,14 @@ public class Basededatos {
     }
 
     /**
+     * Devuelve el numero de usuarios registrados
+     * @return int
+     */
+    public int size(){
+        return RegistroUsuarios.size();
+    }
+
+    /**
      * Almacena un jugador en RegistroUsuarios
      * @param name String
      * @param password String
