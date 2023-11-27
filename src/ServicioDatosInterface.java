@@ -7,10 +7,22 @@ public interface ServicioDatosInterface extends Remote {
 
     void setUser(String name, String password) throws RemoteException;
 
+    String getUser(String name) throws RemoteException;
+
     boolean existe(String name) throws RemoteException;
 
     String getPass(String name) throws RemoteException;
 
     void deleteUser(String name) throws RemoteException;
+
+    void setPartida(Jugador j1, Jugador j2) throws RemoteException;
+
+    Partida getPartida(int index) throws RemoteException;
+
+    void borrarPartida(int index) throws RemoteException;
+
+    int numeroPartidas() throws RemoteException;
+
+    Partida[] listaPartidas() throws RemoteException;
 
 }

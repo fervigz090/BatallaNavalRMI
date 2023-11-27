@@ -6,22 +6,27 @@ public class Servidor {
             // Obtener referencia al servicio de la base de datos remota
             ServicioDatosInterface servicioDatos = (ServicioDatosInterface) Naming.lookup("rmi://localhost/servicioDatos");
 
-            // Ahora puedes usar el servicio de base de datos
-            // Por ejemplo, obtener el tamaño de la base de datos
-
+            // Test Servicio de Datos
+            // CRUD Jugadores
+            System.out.println("Tamaño de la base de datos: " + servicioDatos.size());
+            servicioDatos.setUser("Pepe", "contrasena");
+            System.out.println("Tamaño de la base de datos: " + servicioDatos.size());
+            System.out.println("contrasena de 'Pepe': " + servicioDatos.getPass("Pepe"));
+            System.out.println("Eliminamos el jugador Pepe");
+            servicioDatos.deleteUser("Pepe");
             System.out.println("Tamaño de la base de datos: " + servicioDatos.size());
 
-            servicioDatos.setUser("nombre", "contrasena");
+            // CRUD Partidas
+            System.out.println("Numero de partidas creadas: " + servicioDatos.numeroPartidas());
+            System.out.println("Creamos dos jugadores y una partida nueva..");
+            servicioDatos.setUser("Alejandro", "1234");
+            servicioDatos.setUser("Maria", "5677");
 
-            System.out.println("Tamaño de la base de datos: " + servicioDatos.size());
 
-            System.out.println("contrasena de 'nombre': " + servicioDatos.getPass("nombre"));
+            System.out.println("Visualizamos a continuacion el tablero:");
+            System.out.println(servicioDatos.getPartida(0).getTablero().toString());
 
-            // Puedes realizar otras operaciones con el servicio de la base de datos aquí
-            // servicioDatos.setUser(...);
-            // servicioDatos.existe(...);
-            // servicioDatos.getPass(...);
-            // servicioDatos.deleteUser(...);
+            // Test
 
         } catch (Exception e) {
             System.err.println("Error en el servidor: " + e.toString());
