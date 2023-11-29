@@ -19,12 +19,18 @@ public class Servidor {
             // CRUD Partidas
             System.out.println("Numero de partidas creadas: " + servicioDatos.numeroPartidas());
             System.out.println("Creamos dos jugadores y una partida nueva..");
-            servicioDatos.setUser("Alejandro", "1234");
-            servicioDatos.setUser("Maria", "5677");
+            Jugador j1 = new Jugador("Alejandro", "1234");
+            Jugador j2 = new Jugador("Maria", "5677");
+            servicioDatos.setUser(j1.getName(), j1.getPassword());
+            servicioDatos.setUser(j2.getName(), j2.getPassword());
+            Partida partida = new Partida(j1, j2);
 
 
-            System.out.println("Visualizamos a continuacion el tablero:");
-            System.out.println(servicioDatos.getPartida(0).getTablero().toString());
+            System.out.println("Visualizamos a continuacion el tablero del jugador 1:");
+            partida.getTablero1().mostrarTablero();
+
+            System.out.println("Visualizamos a continuacion el tablero del jugador 2:");
+            partida.getTablero2().mostrarTablero();
 
             // Test
 

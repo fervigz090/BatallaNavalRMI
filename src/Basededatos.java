@@ -7,7 +7,7 @@ import java.rmi.registry.LocateRegistry;
 public class Basededatos {
 
     public static void main(String[] args) {
-        try{
+        try {
             //Iniciamos el registro RMI en el puerto 1099
             LocateRegistry.createRegistry(1099);
 
@@ -16,11 +16,8 @@ public class Basededatos {
             Naming.rebind("servicioDatos", servicioDatos);
 
             System.out.println("Servidor de Base de datos listo.");
-        }catch (Exception e){
-            System.err.println("Error en el servidor: " + e.toString());
+        } catch (Exception e) {
+            System.err.println("Error en el servidor: " + e);
         }
-
-
     }
-
 }

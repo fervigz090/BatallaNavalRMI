@@ -7,6 +7,7 @@ import java.util.List;
 public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDatosInterface {
 
     private HashMap<String, String> RegistroJugadores = new HashMap<>();
+    // private HashMap<String, Integer> Puntuaciones = new HashMap<>();
     private List<Partida> RegistroPartidas = new ArrayList<>();
 
     protected ServicioDatosImpl() throws RemoteException {

@@ -1,12 +1,14 @@
 public class Partida {
     private Jugador jugador1;
     private Jugador jugador2;
-    private  Tablero tablero;
+    private  Tablero tablero1;
+    private Tablero tablero2;
 
     public Partida(Jugador jugador1, Jugador jugador2){
         this.jugador1 = jugador1;
         this.jugador2 = jugador2;
-        this.tablero = new Tablero(10, 10);
+        this.tablero1 = new Tablero(10, 10);
+        this.tablero2 = new Tablero(10, 10);
     }
 
     public Jugador getJugador1() {
@@ -17,8 +19,12 @@ public class Partida {
         return jugador2;
     }
 
-    public Tablero getTablero() {
-        return tablero;
+    public Tablero getTablero1() {
+        return tablero1;
+    }
+
+    public Tablero getTablero2() {
+        return tablero2;
     }
 
     public void setJugador1(Jugador jugador1) {
@@ -29,7 +35,11 @@ public class Partida {
         this.jugador2 = jugador2;
     }
 
-    public void setTablero(Tablero tablero) {
-        this.tablero = tablero;
+    public void setTablero1(Tablero tablero) {
+        this.tablero1 = tablero;
+    }
+
+    public void setTablero2(Tablero tablero2) {
+        this.tablero2 = tablero2;
     }
 }
