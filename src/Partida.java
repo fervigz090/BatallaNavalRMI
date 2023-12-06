@@ -4,11 +4,11 @@ public class Partida {
     private  Tablero tablero1;
     private Tablero tablero2;
 
-    public Partida(Jugador jugador1, Jugador jugador2){
+    public Partida(Jugador jugador1, Jugador jugador2, Tablero t1, Tablero t2){
         this.jugador1 = jugador1;
         this.jugador2 = jugador2;
-        this.tablero1 = new Tablero(10, 10);
-        this.tablero2 = new Tablero(10, 10);
+        this.tablero1 = t1;
+        this.tablero2 = t2;
     }
 
     public Jugador getJugador1() {
