@@ -6,12 +6,12 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class ServicioAutenticacionImpl extends UnicastRemoteObject implements ServicioAutenticacionInterface {
 
-    private ServicioDatosInterface sD;
+    private ServicioDatosInterface servicioDatos;
 
     protected ServicioAutenticacionImpl() throws RemoteException, MalformedURLException, NotBoundException {
         super();
         try {
-            sD  = (ServicioDatosInterface) Naming.lookup("rmi://localhost/sD");
+            servicioDatos  = (ServicioDatosInterface) Naming.lookup("rmi://localhost/servicioDatos");
         } catch (NotBoundException | MalformedURLException | RemoteException e) {
             System.err.println(e.toString());
         }
@@ -20,8 +20,8 @@ public class ServicioAutenticacionImpl extends UnicastRemoteObject implements Se
         @Override
         public boolean login (String name, String password) throws RemoteException {
             try {
-                if (sD.existe(name)) {
-                    return sD.getPass(name).equals(password);
+                if (servicioDatos.existe(name)) {
+                    return servicioDatos.getPass(name).equals(password);
                 } else {
                     return false;
                 }
@@ -33,7 +33,7 @@ public class ServicioAutenticacionImpl extends UnicastRemoteObject implements Se
 
         @Override
         public void registrar (String name, String password) throws RemoteException {
-        sD.setUser(name, password);
+        servicioDatos.setUser(name, password);
     }
 
 }

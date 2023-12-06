@@ -15,7 +15,7 @@ public interface ServicioDatosInterface extends Remote {
 
     void deleteUser(String name) throws RemoteException;
 
-    void setPartida(Jugador j1, Jugador j2) throws RemoteException;
+    void setPartida(Jugador j1, Jugador j2, Tablero t1, Tablero t2) throws RemoteException;
 
     Partida getPartida(int index) throws RemoteException;
 

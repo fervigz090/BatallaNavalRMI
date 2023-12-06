@@ -1,48 +1,80 @@
 import java.rmi.Naming;
+import java.rmi.registry.LocateRegistry;
 
 public class Servidor {
     public static void main(String[] args) {
+
+        try {
+            //Iniciamos el registro RMI en el puerto 1098
+            LocateRegistry.createRegistry(1098);
+
+            //Creamos una instancia de la base de datos e indicamos su url
+            ServicioGestorInterface servicioGestor = new ServicioGestorImpl();
+            Naming.rebind("servicioGestor", servicioGestor);
+
+            System.out.println("Servicio Gestor listo.");
+        } catch (Exception e) {
+            System.err.println("Error en el servicio gestor: " + e);
+        }
+
+        try {
+            //Iniciamos el registro RMI en el puerto 1097
+            LocateRegistry.createRegistry(1097);
+
+            //Creamos una instancia de la base de datos e indicamos su url
+            ServicioAutenticacionInterface servicioAutenticacion = new ServicioAutenticacionImpl();
+            Naming.rebind("servicioAutenticacion", servicioAutenticacion);
+
+            System.out.println("Servicio Autenticacion listo.");
+        } catch (Exception e) {
+            System.err.println("Error en el servicio de autenticacion: " + e);
+        }
+
+        try {
+            //Iniciamos el registro RMI en el puerto 1096
+            LocateRegistry.createRegistry(1096);
+
+            //Creamos una instancia de la base de datos e indicamos su url
+            CallbackJugadorInterface cBack = new CallbackJugadorImpl();
+            Naming.rebind("cBack", cBack);
+
+            System.out.println("Servicio CallBack listo.");
+        } catch (Exception e) {
+            System.err.println("Error en el servicio CallBack: " + e);
+        }
+
         try {
             // Obtener referencia al servicio de la base de datos remota
-            ServicioDatosInterface sD = (ServicioDatosInterface) Naming.lookup("rmi://localhost/sD");
+            ServicioDatosInterface servicioDatos = (ServicioDatosInterface) Naming.lookup("rmi://localhost/servicioDatos");
 
             // referencia al servicio gestor
-            ServicioGestorInterface sG = (ServicioGestorInterface) Naming.lookup("rmi://localhost/sG");
+            ServicioGestorInterface servicioGestor = (ServicioGestorInterface) Naming.lookup("rmi://localhost/servicioGestor");
 
             // referencia al servicio de autenticación.
-            ServicioAutenticacionInterface sA = (ServicioAutenticacionInterface) Naming.lookup("rmi://localhost/sA");
+            ServicioAutenticacionInterface servicioAutenticacion = (ServicioAutenticacionInterface) Naming.lookup("rmi://localhost/servicioAutenticacion");
 
             // referencia al servicio de comunicacion con el cliente
             CallbackJugadorInterface cBack = (CallbackJugadorInterface) Naming.lookup("rmi://localhost/cBack");
 
 
-            // Test Servicio de Datos
-            // CRUD Jugadores
-            System.out.println("Tamaño de la base de datos: " + sD.size());
-            sD.setUser("Pepe", "contrasena");
-            System.out.println("Tamaño de la base de datos: " + sD.size());
-            System.out.println("contrasena de 'Pepe': " + sD.getPass("Pepe"));
-            System.out.println("Eliminamos el jugador Pepe");
-            sD.deleteUser("Pepe");
-            System.out.println("Tamaño de la base de datos: " + sD.size());
+            /* TEST */
+            // registro de jugadores
+            System.out.println("Registramos 2 jugadores" +
+                    "   Maria - 1234" +
+                    "   Rafa - 5678");
+            servicioAutenticacion.registrar("Maria", "1234");
+            servicioAutenticacion.registrar("Rafa", "5678");
 
-            // CRUD Partidas
-            System.out.println("Numero de partidas creadas: " + sD.numeroPartidas());
-            System.out.println("Creamos dos jugadores y una partida nueva..");
-            Jugador j1 = new Jugador("Alejandro", "1234");
-            Jugador j2 = new Jugador("Maria", "5677");
-            sD.setUser(j1.getName(), j1.getPassword());
-            sD.setUser(j2.getName(), j2.getPassword());
-            Partida partida = new Partida(j1, j2, sG.crearTablero(), sG.crearTablero());
+            System.out.println("Comprobamos que estan en la base de datos");
+            System.out.println(servicioDatos.existe("Maria"));
+            System.out.println(servicioDatos.existe("Rafa"));
 
+            System.out.println("Creamos una partida con estos dos jugadores");
+//            servicioDatos.setPartida(new Jugador("Maria", "1234"),
+//                                     new Jugador("Rafa", "5678"),
+//                                     servicioGestor.crearTablero(),
+//                                     servicioGestor.crearTablero());
 
-            System.out.println("Visualizamos a continuacion el tablero del jugador 1:");
-            partida.getTablero1().mostrarTablero();
-
-            System.out.println("Visualizamos a continuacion el tablero del jugador 2:");
-            partida.getTablero2().mostrarTablero();
-
-            // Test
 
         } catch (Exception e) {
             System.err.println("Error en el servidor: " + e.toString());

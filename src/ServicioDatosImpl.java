@@ -44,8 +44,8 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
         RegistroJugadores.remove(name);
     }
 
-    public void setPartida(Jugador j1, Jugador j2){
-        Partida p = new Partida(j1, j2);
+    public void setPartida(Jugador j1, Jugador j2, Tablero t1, Tablero t2){
+        Partida p = new Partida(j1, j2, t1, t2);
         RegistroPartidas.add(p);
     }
 
