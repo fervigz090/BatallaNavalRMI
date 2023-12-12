@@ -1,4 +1,6 @@
-public class Tablero {
+import java.io.Serializable;
+
+public class Tablero implements Serializable {
     private int filas;
     private int columnas;
     private char[][] casillas;

@@ -8,7 +8,7 @@ public class Servidor {
             //Iniciamos el registro RMI en el puerto 1098
             LocateRegistry.createRegistry(1098);
 
-            //Creamos una instancia de la base de datos e indicamos su url
+            //Creamos una instancia del servicio gestor e indicamos su url
             ServicioGestorInterface servicioGestor = new ServicioGestorImpl();
             Naming.rebind("servicioGestor", servicioGestor);
 
@@ -21,26 +21,13 @@ public class Servidor {
             //Iniciamos el registro RMI en el puerto 1097
             LocateRegistry.createRegistry(1097);
 
-            //Creamos una instancia de la base de datos e indicamos su url
+            //Creamos una instancia del servicio de autenticacion e indicamos su url
             ServicioAutenticacionInterface servicioAutenticacion = new ServicioAutenticacionImpl();
             Naming.rebind("servicioAutenticacion", servicioAutenticacion);
 
             System.out.println("Servicio Autenticacion listo.");
         } catch (Exception e) {
             System.err.println("Error en el servicio de autenticacion: " + e);
-        }
-
-        try {
-            //Iniciamos el registro RMI en el puerto 1096
-            LocateRegistry.createRegistry(1096);
-
-            //Creamos una instancia de la base de datos e indicamos su url
-            CallbackJugadorInterface cBack = new CallbackJugadorImpl();
-            Naming.rebind("cBack", cBack);
-
-            System.out.println("Servicio CallBack listo.");
-        } catch (Exception e) {
-            System.err.println("Error en el servicio CallBack: " + e);
         }
 
         try {
@@ -59,21 +46,16 @@ public class Servidor {
 
             /* TEST */
             // registro de jugadores
-            System.out.println("Registramos 2 jugadores" +
-                    "   Maria - 1234" +
-                    "   Rafa - 5678");
+            System.out.println("""
+                    Registramos 2 jugadores  \s
+                    Maria - 1234  \s
+                    Rafa - 5678""");
             servicioAutenticacion.registrar("Maria", "1234");
             servicioAutenticacion.registrar("Rafa", "5678");
 
             System.out.println("Comprobamos que estan en la base de datos");
             System.out.println(servicioDatos.existe("Maria"));
             System.out.println(servicioDatos.existe("Rafa"));
-
-            System.out.println("Creamos una partida con estos dos jugadores");
-//            servicioDatos.setPartida(new Jugador("Maria", "1234"),
-//                                     new Jugador("Rafa", "5678"),
-//                                     servicioGestor.crearTablero(),
-//                                     servicioGestor.crearTablero());
 
 
         } catch (Exception e) {
