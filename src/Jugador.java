@@ -1,7 +1,5 @@
-import java.io.Serializable;
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.server.UnicastRemoteObject;
 
 public class Jugador {
     private String name;
@@ -30,6 +28,7 @@ public class Jugador {
 
     public static void main(String[] args) {
 
+        //Levanta el servicio CallBackJugador
         try {
             //Iniciamos el registro RMI en el puerto 1096
             LocateRegistry.createRegistry(1096);
@@ -42,6 +41,20 @@ public class Jugador {
         } catch (Exception e) {
             System.err.println("Error en el servicio CallBack: " + e);
         }
+
+        try {
+            //Busca el objeto remoto en el servidor
+            ServicioAutenticacionImpl servicioAutenticacion = (ServicioAutenticacionImpl) Naming.lookup("rmi://localhost/Servidor");
+
+
+
+        } catch (Exception e) {
+            System.err.println("Error de comunicacion con el servidor: " + e.toString());
+        }
+
+
+
+
     }
 
 }
