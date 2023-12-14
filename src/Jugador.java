@@ -28,8 +28,6 @@ public class Jugador {
 
     public static void main(String[] args) {
 
-
-
         try {
             //Busca el objeto remoto en el servidor
             ServicioAutenticacionImpl servicioAutenticacion = (ServicioAutenticacionImpl) Naming.lookup("rmi://localhost/servicioAutenticacion");

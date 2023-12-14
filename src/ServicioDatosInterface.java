@@ -25,4 +25,6 @@ public interface ServicioDatosInterface extends Remote {
 
     Partida[] listaPartidas() throws RemoteException;
 
+    void listaJugadores() throws RemoteException;
+
 }

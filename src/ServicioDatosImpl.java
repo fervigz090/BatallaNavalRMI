@@ -68,4 +68,11 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
         }
         return lista;
     }
+
+    @Override
+    public void listaJugadores() throws RemoteException {
+        for (HashMap.Entry<String, String> entry : RegistroJugadores.entrySet()) {
+            System.out.printf("%s -> %d puntos\n", entry.getKey(), 3546);
+        }
+    }
 }

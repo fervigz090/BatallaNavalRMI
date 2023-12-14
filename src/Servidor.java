@@ -68,13 +68,14 @@ public class Servidor {
                     Registramos 2 jugadores  \s
                     Maria - 1234  \s
                     Rafa - 5678""");
-//            servicioAutenticacion.registrar("Maria", "1234");
-//            servicioAutenticacion.registrar("Rafa", "5678");
-//
-//            System.out.println("Comprobamos que estan en la base de datos");
-//            System.out.println(servicioDatos.existe("Maria"));
-//            System.out.println(servicioDatos.existe("Rafa"));
+            servicioAutenticacion.registrar("Maria", "1234");
+            servicioAutenticacion.registrar("Rafa", "5678");
 
+            System.out.println("Comprobamos que estan en la base de datos");
+            System.out.println(servicioDatos.existe("Maria"));
+            System.out.println(servicioDatos.existe("Rafa"));
+
+            servicioDatos.listaJugadores();
 
         } catch (Exception e) {
             System.err.println("Error en el servidor: " + e.toString());

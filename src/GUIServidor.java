@@ -5,47 +5,55 @@ import java.awt.event.ActionListener;
 
 public class GUIServidor extends JFrame {
 
+    private JTextArea textArea;
+
     public GUIServidor() {
         setTitle("Menú del Servidor");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(3, 1));
+        setLayout(new BorderLayout());
+
+        textArea = new JTextArea(20, 40);
+        textArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+
+        JPanel panelBotones = new JPanel();
+        panelBotones.setLayout(new GridLayout(3, 1));
 
         JButton btnInfoServidor = new JButton("Información del servidor");
         JButton btnEstadoPartidas = new JButton("Estado de las partidas actuales");
         JButton btnSalir = new JButton("Salir");
 
-        add(btnInfoServidor);
-        add(btnEstadoPartidas);
-        add(btnSalir);
+        panelBotones.add(btnInfoServidor);
+        panelBotones.add(btnEstadoPartidas);
+        panelBotones.add(btnSalir);
+
+        add(scrollPane, BorderLayout.NORTH);
+        add(panelBotones, BorderLayout.CENTER);
 
         btnInfoServidor.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Lógica para el botón "Información del servidor"
-                JOptionPane.showMessageDialog(null, "Mostrar información del servidor");
+                textArea.append("Mostrando información del servidor...\n");
+                // Aquí puedes agregar la lógica real para mostrar información del servidor
             }
         });
 
         btnEstadoPartidas.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Lógica para el botón "Estado de las partidas actuales"
-                JOptionPane.showMessageDialog(null, "Mostrar estado de las partidas actuales");
+                textArea.append("Mostrando estado de las partidas actuales...\n");
+                // Aquí puedes agregar la lógica real para mostrar estado de las partidas
             }
         });
 
         btnSalir.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Lógica para el botón "Salir"
                 System.exit(0);
             }
         });
 
-        setSize(300, 200);
+        setSize(700, 500);
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new GUIServidor());
-    }
 }
 
