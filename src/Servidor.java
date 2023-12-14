@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 
@@ -6,7 +7,7 @@ public class Servidor {
 
         try {
             //Iniciamos el registro RMI en el puerto 1098
-            LocateRegistry.createRegistry(1098);
+            LocateRegistry.createRegistry(1095);
 
             //Creamos una instancia del servicio gestor e indicamos su url
             ServicioGestorInterface servicioGestor = new ServicioGestorImpl();
@@ -30,6 +31,20 @@ public class Servidor {
             System.err.println("Error en el servicio de autenticacion: " + e);
         }
 
+        //Levanta el servicio CallBackJugador
+        try {
+            //Iniciamos el registro RMI en el puerto 1096
+            LocateRegistry.createRegistry(1096);
+
+            //Creamos una instancia de la base de datos e indicamos su url
+            CallbackJugadorInterface cBack = new CallbackJugadorImpl();
+            Naming.rebind("cBack", cBack);
+
+            System.out.println("Servicio CallBack listo.");
+        } catch (Exception e) {
+            System.err.println("Error en el servicio CallBack: " + e);
+        }
+
         try {
             // Obtener referencia al servicio de la base de datos remota
             ServicioDatosInterface servicioDatos = (ServicioDatosInterface) Naming.lookup("rmi://localhost/servicioDatos");
@@ -43,6 +58,9 @@ public class Servidor {
             // referencia al servicio de comunicacion con el cliente
             CallbackJugadorInterface cBack = (CallbackJugadorInterface) Naming.lookup("rmi://localhost/cBack");
 
+            // Lanzamiento de GUI
+            SwingUtilities.invokeLater(() -> new GUIServidor());
+
 
             /* TEST */
             // registro de jugadores
@@ -50,12 +68,12 @@ public class Servidor {
                     Registramos 2 jugadores  \s
                     Maria - 1234  \s
                     Rafa - 5678""");
-            servicioAutenticacion.registrar("Maria", "1234");
-            servicioAutenticacion.registrar("Rafa", "5678");
-
-            System.out.println("Comprobamos que estan en la base de datos");
-            System.out.println(servicioDatos.existe("Maria"));
-            System.out.println(servicioDatos.existe("Rafa"));
+//            servicioAutenticacion.registrar("Maria", "1234");
+//            servicioAutenticacion.registrar("Rafa", "5678");
+//
+//            System.out.println("Comprobamos que estan en la base de datos");
+//            System.out.println(servicioDatos.existe("Maria"));
+//            System.out.println(servicioDatos.existe("Rafa"));
 
 
         } catch (Exception e) {

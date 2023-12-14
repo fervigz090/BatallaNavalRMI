@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 
@@ -16,6 +17,9 @@ public class Basededatos {
             Naming.rebind("servicioDatos", servicioDatos);
 
             System.out.println("Servidor de Base de datos listo.");
+
+            SwingUtilities.invokeLater(() -> new GUIBaseDeDatos());
+
         } catch (Exception e) {
             System.err.println("Error en el servidor: " + e);
         }
