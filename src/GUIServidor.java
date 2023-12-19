@@ -2,9 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.Naming;
 
 public class GUIServidor extends JFrame {
 
+    private ServicioAutenticacionInterface servicioAutenticacion;
+    private ServicioGestorInterface servicioGestor;
     private JTextArea textArea;
 
     public GUIServidor() {
@@ -12,7 +15,8 @@ public class GUIServidor extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        textArea = new JTextArea(20, 40);
+        textArea = new JTextArea(10, 40);
+        textArea.setFont(new Font("Courier New", Font.PLAIN, 12));
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
 
@@ -30,10 +34,35 @@ public class GUIServidor extends JFrame {
         add(scrollPane, BorderLayout.NORTH);
         add(panelBotones, BorderLayout.CENTER);
 
+        try {
+            servicioAutenticacion = (ServicioAutenticacionInterface) Naming.lookup("rmi://localhost/servicioAutenticacion");
+        } catch (Exception e) {
+            System.err.println("Error en referencia al servicio de datos: " + e.toString());
+            textArea.append("Error conectando al servicio de datos.\n");
+        }
+
+        try {
+            servicioGestor = (ServicioGestorInterface) Naming.lookup("rmi://localhost/servicioGestor");
+        } catch (Exception e) {
+            System.err.println("Error en referencia al servicio gestor: " + e.toString());
+            textArea.append("Error conectando al servicio gestor.\n");
+        }
+
         btnInfoServidor.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                textArea.append("Mostrando información del servidor...\n");
-                // Aquí puedes agregar la lógica real para mostrar información del servidor
+                textArea.setText("");
+                textArea.append("Información del servidor\n\n");
+                // Formato de la cabecera y las filas de la tabla
+                String headerFormat = "%-20s %-30s %-10s %n"; // Ajusta el ancho según sea necesario
+                String rowFormat = "%-20s %-30s %-10s %n";
+
+                // Encabezado de la tabla
+                textArea.append(String.format(headerFormat, "Servicio", "Nombre", "Puerto\n"));
+
+                // Filas de datos
+                textArea.append(String.format(rowFormat, "Autenticacion", "servicioAutenticacion", "1097"));
+                textArea.append(String.format(rowFormat, "Gestor", "servicioGestor", "1095"));
+
             }
         });
 
@@ -50,9 +79,10 @@ public class GUIServidor extends JFrame {
             }
         });
 
-        setSize(700, 500);
+        setSize(500, 400);
         setLocationRelativeTo(null);
         setVisible(true);
+        setResizable(false);
     }
 
 }

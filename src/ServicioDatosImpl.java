@@ -6,7 +6,7 @@ import java.util.List;
 
 public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDatosInterface {
 
-    private HashMap<String, String> RegistroJugadores = new HashMap<>();
+    private HashMap<String, Jugador> RegistroJugadores = new HashMap<>();
     // private HashMap<String, Integer> Puntuaciones = new HashMap<>();
     private List<Partida> RegistroPartidas = new ArrayList<>();
 
@@ -20,13 +20,13 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
     }
 
     @Override
-    public void setUser(String name, String password) throws RemoteException {
-        RegistroJugadores.put(name, password);
+    public void setUser(Jugador jugador) throws RemoteException {
+        RegistroJugadores.put(jugador.getName(), jugador);
     }
 
     @Override
-    public String getUser(String name) throws RemoteException{
-        return RegistroJugadores.get(name);
+    public Jugador getUser(Jugador jugador) throws RemoteException{
+        return RegistroJugadores.get(jugador.getName());
     }
 
     @Override
@@ -36,7 +36,7 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 
     @Override
     public String getPass(String name) throws RemoteException {
-        return RegistroJugadores.get(name);
+        return RegistroJugadores.get(name).getPassword();
     }
 
     @Override
@@ -71,8 +71,15 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 
     @Override
     public void listaJugadores() throws RemoteException {
-        for (HashMap.Entry<String, String> entry : RegistroJugadores.entrySet()) {
+        for (HashMap.Entry<String, Jugador> entry : RegistroJugadores.entrySet()) {
             System.out.printf("%s -> %d puntos\n", entry.getKey(), 3546);
         }
+    }
+
+    @Override
+    public int obtenerPuntuacion(String name) throws RemoteException {
+        int puntuacion = 0;
+        puntuacion = RegistroJugadores.get(name).getPuntuacion();
+        return 0;
     }
 }

@@ -5,9 +5,9 @@ public interface ServicioDatosInterface extends Remote {
 
     int size() throws RemoteException;
 
-    void setUser(String name, String password) throws RemoteException;
+    void setUser(Jugador jugador) throws RemoteException;
 
-    String getUser(String name) throws RemoteException;
+    Jugador getUser(Jugador jugador) throws RemoteException;
 
     boolean existe(String name) throws RemoteException;
 
@@ -26,5 +26,7 @@ public interface ServicioDatosInterface extends Remote {
     Partida[] listaPartidas() throws RemoteException;
 
     void listaJugadores() throws RemoteException;
+
+    int obtenerPuntuacion(String name) throws RemoteException;
 
 }

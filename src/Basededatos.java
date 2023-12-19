@@ -21,7 +21,7 @@ public class Basededatos {
             SwingUtilities.invokeLater(() -> new GUIBaseDeDatos());
 
         } catch (Exception e) {
-            System.err.println("Error en el servidor: " + e);
+            System.err.println("Error en el servicio de datos: " + e);
         }
     }
 

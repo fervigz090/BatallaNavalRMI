@@ -68,8 +68,10 @@ public class Servidor {
                     Registramos 2 jugadores  \s
                     Maria - 1234  \s
                     Rafa - 5678""");
-            servicioAutenticacion.registrar("Maria", "1234");
-            servicioAutenticacion.registrar("Rafa", "5678");
+            Jugador j1 = new Jugador("Maria", "1234");
+            Jugador j2 = new Jugador("Rafa", "5678");
+            servicioAutenticacion.registrar(j1);
+            servicioAutenticacion.registrar(j2);
 
             System.out.println("Comprobamos que estan en la base de datos");
             System.out.println(servicioDatos.existe("Maria"));

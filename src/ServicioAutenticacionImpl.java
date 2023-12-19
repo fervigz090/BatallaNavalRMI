@@ -32,8 +32,8 @@ public class ServicioAutenticacionImpl extends UnicastRemoteObject implements Se
         }
 
         @Override
-        public void registrar (String name, String password) throws RemoteException {
-        servicioDatos.setUser(name, password);
+        public void registrar (Jugador jugador) throws RemoteException {
+        servicioDatos.setUser(jugador);
     }
 
 }

@@ -2,48 +2,196 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.Naming;
+import java.rmi.RemoteException;
 
 public class GUIJugador extends JFrame {
 
+    private CardLayout cardLayout;
+    private JPanel cardPanel;
+
+    private JPanel panelNoAutenticado;
+    private JPanel panelAutenticado;
+
+    private JButton btnRegistrar;
+    private JButton btnLogin;
+    private JButton btnSalirNoAutenticado;
+
+    private JButton btnInfoJugador;
+    private JButton btnIniciarPartida;
+    private JButton btnListarPartidas;
+    private JButton btnUnirsePartida;
+    private JButton btnSalirAutenticado;
+
+    private JTextArea textArea;
+
+    private ServicioDatosInterface servicioDatos;
+    private String name = "";
+
     public GUIJugador() {
-        setTitle("GUI Jugador");
+        setTitle("Jugador - Cliente");
+        setSize(500, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(3, 1));
+        cardLayout = new CardLayout();
+        cardPanel = new JPanel(cardLayout);
 
-        JButton btnRegistrarse = new JButton("Registrarse");
-        JButton btnLogin = new JButton("Login");
-        JButton btnSalir = new JButton("Salir");
+        inicializarComponentes();
+        configurarPaneles();
 
-        add(btnRegistrarse);
-        add(btnLogin);
-        add(btnSalir);
-
-        btnRegistrarse.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // Lógica para el botón "Registrarse"
-                JOptionPane.showMessageDialog(null, "Implementar la lógica para Registrarse");
-            }
-        });
-
-        btnLogin.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // Lógica para el botón "Login"
-                JOptionPane.showMessageDialog(null, "Implementar la lógica para Login");
-            }
-        });
-
-        btnSalir.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // Lógica para el botón "Salir"
-                System.exit(0);
-            }
-        });
-
-        setSize(300, 200);
+        setContentPane(cardPanel);
         setLocationRelativeTo(null);
         setVisible(true);
+
+        try {
+            servicioDatos = (ServicioDatosInterface) Naming.lookup("rmi://localhost/servicioDatos");
+        } catch (Exception e) {
+            e.printStackTrace(); // Manejar adecuadamente la excepción
+        }
+
     }
 
+    private void inicializarComponentes() {
+
+        // Panel No Autenticado
+        panelNoAutenticado = new JPanel(new GridLayout(3, 1));
+        btnRegistrar = new JButton("Registrar un nuevo jugador");
+        btnLogin = new JButton("Hacer login");
+        btnSalirNoAutenticado = new JButton("Salir");
+        // Establecer margenes
+        Insets margins = new Insets(6, 12, 6, 12); // Ejemplo de márgenes
+        btnRegistrar.setMargin(margins);
+        btnLogin.setMargin(margins);
+        btnSalirNoAutenticado.setMargin(margins);
+
+        // Panel Autenticado
+        panelAutenticado = new JPanel(new BorderLayout());
+        textArea = new JTextArea();
+        textArea.setEditable(false);
+        JScrollPane scrollPanel = new JScrollPane(textArea);
+
+        JPanel botonPanel = new JPanel(new GridLayout(5, 1));
+        btnInfoJugador = new JButton("Información del jugador");
+        btnIniciarPartida = new JButton("Iniciar una partida");
+        btnListarPartidas = new JButton("Listar partidas a la espera");
+        btnUnirsePartida = new JButton("Unirse a una partida iniciada");
+        btnSalirAutenticado = new JButton("Salir (Logout)");
+
+        // Establecer márgenes
+        btnInfoJugador.setMargin(margins);
+        btnIniciarPartida.setMargin(margins);
+        btnListarPartidas.setMargin(margins);
+        btnUnirsePartida.setMargin(margins);
+        btnSalirAutenticado.setMargin(margins);
+
+        botonPanel.add(btnInfoJugador);
+        botonPanel.add(btnIniciarPartida);
+        botonPanel.add(btnListarPartidas);
+        botonPanel.add(btnUnirsePartida);
+        botonPanel.add(btnSalirAutenticado);
+
+        panelAutenticado.add(scrollPanel, BorderLayout.CENTER);
+        panelAutenticado.add(botonPanel, BorderLayout.PAGE_END);
+
+        // ActionListeners para los botones
+        btnSalirNoAutenticado.addActionListener(e -> System.exit(0));
+        btnRegistrar.addActionListener(e -> realizarRegistro());
+        btnLogin.addActionListener(e -> realizarLogin());
+        btnInfoJugador.addActionListener(e -> {
+            try {
+                obtenerPuntuacion();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        btnSalirAutenticado.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                   realizarLogout();
+            }
+        });
+
+
+        // Configuracion de colores y fuentes
+        Color backgroundColor = new Color(42, 42, 42);
+        Color buttonColor = new Color(120, 120, 120);
+        Color textColor = new Color(145, 248, 160);
+        Font retroFont = new Font("Courier New", Font.PLAIN, 14);
+        // Aplicar estilos retro a los componentes
+        panelNoAutenticado.setBackground(backgroundColor);
+        panelAutenticado.setBackground(backgroundColor);
+
+        textArea.setBackground(backgroundColor);
+        textArea.setForeground(textColor);
+        textArea.setFont(retroFont);
+
+
+    }
+
+    private void configurarPaneles() {
+        // Panel No Autenticado
+        panelNoAutenticado.add(btnRegistrar);
+        panelNoAutenticado.add(btnLogin);
+        panelNoAutenticado.add(btnSalirNoAutenticado);
+
+        cardPanel.add(panelNoAutenticado, "NoAutenticado");
+        cardPanel.add(panelAutenticado, "Autenticado");
+
+    }
+
+    // Métodos para cambiar entre paneles
+    public void mostrarPanelNoAutenticado() {
+        cardLayout.show(cardPanel, "NoAutenticado");
+    }
+
+    public void mostrarPanelAutenticado() {
+        cardLayout.show(cardPanel, "Autenticado");
+    }
+
+    private void realizarRegistro() {
+        String nombre = JOptionPane.showInputDialog(this, "Ingrese su nombre:");
+        String contraseña = JOptionPane.showInputDialog(this, "Ingrese su contraseña:");
+        name = nombre;
+
+        Jugador jugador = new Jugador(nombre, contraseña);
+        if (jugador.registrar()) {
+            JOptionPane.showMessageDialog(this, "Registro exitoso.", "Registro", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al registrar.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void realizarLogin() {
+        String nombre = JOptionPane.showInputDialog(this, "Ingrese su nombre:");
+        String contraseña = JOptionPane.showInputDialog(this, "Ingrese su contraseña:");
+        name = nombre;
+
+        Jugador jugador = new Jugador(nombre, contraseña);
+        if (jugador.iniciarSesion()) {
+            JOptionPane.showMessageDialog(this, "Login exitoso.", "Login", JOptionPane.INFORMATION_MESSAGE);
+            mostrarPanelAutenticado();
+        } else {
+            JOptionPane.showMessageDialog(this, "Login fallido.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void obtenerPuntuacion() throws RemoteException {
+        textArea.setText("");
+        textArea.append("Jugador -> " + name + "\n");
+        textArea.append("Puntuación maxima -> " + String.valueOf(servicioDatos.obtenerPuntuacion(name)) + "\n");
+    }
+
+    private void realizarLogout() {
+        // Limpiar o resetear el estado del usuario
+        limpiarEstadoUsuario();
+        // Cambiar la vista al panel de no autenticado
+        mostrarPanelNoAutenticado();
+    }
+
+    private void limpiarEstadoUsuario() {
+        // Limpia el JTextArea, resetea variables, etc.
+        textArea.setText("");
+        name = "";
+    }
+
+
 }
-
-

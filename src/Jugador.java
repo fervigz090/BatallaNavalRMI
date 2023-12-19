@@ -1,13 +1,38 @@
 import javax.swing.*;
+import java.io.Serializable;
 import java.rmi.Naming;
 
-public class Jugador {
+public class Jugador implements Serializable {
     private String name;
     private String password;
+    private int Puntuacion = 0;
+    private ServicioAutenticacionInterface servicioAutenticacion;
 
     public Jugador (String name, String password){
         this.name = name;
         this.password = password;
+        try {
+            servicioAutenticacion = (ServicioAutenticacionInterface) Naming.lookup("rmi://localhost/servicioAutenticacion");
+        } catch (Exception e) {
+            e.printStackTrace(); // Manejar adecuadamente la excepción
+        }
+    }
+
+    public boolean registrar() {
+        try {
+            servicioAutenticacion.registrar(this);
+            return true; // Registro exitoso
+        } catch (Exception e) {
+            return false; // Manejo de error
+        }
+    }
+
+    public boolean iniciarSesion() {
+        try {
+            return servicioAutenticacion.login(name, password);
+        } catch (Exception e) {
+            return false; // Manejo de error
+        }
     }
 
     public String getName() {
@@ -26,18 +51,17 @@ public class Jugador {
         this.password = password;
     }
 
+    public int getPuntuacion() {
+        return Puntuacion;
+    }
+
+    public void setPuntuacion(int puntuacion) {
+        Puntuacion = puntuacion;
+    }
+
     public static void main(String[] args) {
 
-        try {
-            //Busca el objeto remoto en el servidor
-            ServicioAutenticacionImpl servicioAutenticacion = (ServicioAutenticacionImpl) Naming.lookup("rmi://localhost/servicioAutenticacion");
-
-        } catch (Exception e) {
-            System.err.println("Error de comunicacion con el servidor: " + e.toString());
-        }
-
         SwingUtilities.invokeLater(() -> new GUIJugador());
-
 
     }
 

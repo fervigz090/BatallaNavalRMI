@@ -5,6 +5,6 @@ public interface ServicioAutenticacionInterface extends Remote {
 
     boolean login(String name, String password) throws RemoteException;
 
-    void registrar(String name, String password) throws RemoteException;
+    void registrar(Jugador jugador) throws RemoteException;
 
 }
