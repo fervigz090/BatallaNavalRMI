@@ -8,7 +8,7 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
 
     private HashMap<String, Jugador> RegistroJugadores = new HashMap<>();
     // private HashMap<String, Integer> Puntuaciones = new HashMap<>();
-    private List<Partida> RegistroPartidas = new ArrayList<>();
+    private ArrayList<Partida> RegistroPartidas = new ArrayList<>();
 
     protected ServicioDatosImpl() throws RemoteException {
         super();
@@ -25,8 +25,8 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
     }
 
     @Override
-    public Jugador getUser(Jugador jugador) throws RemoteException{
-        return RegistroJugadores.get(jugador.getName());
+    public Jugador getUser(String name) throws RemoteException{
+        return RegistroJugadores.get(name);
     }
 
     @Override
@@ -44,8 +44,8 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
         RegistroJugadores.remove(name);
     }
 
-    public void setPartida(Jugador j1, Jugador j2, Tablero t1, Tablero t2){
-        Partida p = new Partida(j1, j2, t1, t2);
+    public void setPartida(Jugador j1, Tablero t1, Tablero t2){
+        Partida p = new Partida(j1, t1, t2);
         RegistroPartidas.add(p);
     }
 
@@ -61,19 +61,21 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
         return RegistroPartidas.size();
     }
 
-    public Partida[] listaPartidas(){
+    public ArrayList<Partida> listaPartidas(){
         Partida[] lista = new Partida[RegistroPartidas.size()];
         for(int i=0; i<lista.length; i++){
             lista[i] = RegistroPartidas.get(i);
         }
-        return lista;
+        return RegistroPartidas;
     }
 
     @Override
-    public void listaJugadores() throws RemoteException {
+    public ArrayList<Jugador> listaJugadores() throws RemoteException {
+        ArrayList<Jugador> l = new ArrayList<>();
         for (HashMap.Entry<String, Jugador> entry : RegistroJugadores.entrySet()) {
-            System.out.printf("%s -> %d puntos\n", entry.getKey(), 3546);
+            l.add(entry.getValue());
         }
+        return l;
     }
 
     @Override

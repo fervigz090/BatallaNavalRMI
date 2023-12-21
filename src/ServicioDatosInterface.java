@@ -1,5 +1,7 @@
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
 public interface ServicioDatosInterface extends Remote {
 
@@ -7,7 +9,7 @@ public interface ServicioDatosInterface extends Remote {
 
     void setUser(Jugador jugador) throws RemoteException;
 
-    Jugador getUser(Jugador jugador) throws RemoteException;
+    Jugador getUser(String name) throws RemoteException;
 
     boolean existe(String name) throws RemoteException;
 
@@ -15,7 +17,7 @@ public interface ServicioDatosInterface extends Remote {
 
     void deleteUser(String name) throws RemoteException;
 
-    void setPartida(Jugador j1, Jugador j2, Tablero t1, Tablero t2) throws RemoteException;
+    void setPartida(Jugador j1, Tablero t1, Tablero t2) throws RemoteException;
 
     Partida getPartida(int index) throws RemoteException;
 
@@ -23,9 +25,9 @@ public interface ServicioDatosInterface extends Remote {
 
     int numeroPartidas() throws RemoteException;
 
-    Partida[] listaPartidas() throws RemoteException;
+    ArrayList<Partida> listaPartidas() throws RemoteException;
 
-    void listaJugadores() throws RemoteException;
+    ArrayList<Jugador> listaJugadores() throws RemoteException;
 
     int obtenerPuntuacion(String name) throws RemoteException;
 

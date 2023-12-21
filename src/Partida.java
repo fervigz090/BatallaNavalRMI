@@ -1,14 +1,22 @@
 public class Partida {
+    private int id;
     private Jugador jugador1;
     private Jugador jugador2;
     private  Tablero tablero1;
     private Tablero tablero2;
+    private enum estadoPartida {EN_ESPERA, EN_CURSO, PAUSADA, TERMINADA}
+    private estadoPartida estadoActual;
 
-    public Partida(Jugador jugador1, Jugador jugador2, Tablero t1, Tablero t2){
+    public Partida(Jugador jugador1, Tablero t1, Tablero t2){
+        this.id += 1;
         this.jugador1 = jugador1;
-        this.jugador2 = jugador2;
         this.tablero1 = t1;
         this.tablero2 = t2;
+        this.estadoActual = estadoPartida.EN_ESPERA;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public Jugador getJugador1() {
@@ -27,6 +35,10 @@ public class Partida {
         return tablero2;
     }
 
+    public estadoPartida getEstadoActual() {
+        return estadoActual;
+    }
+
     public void setJugador1(Jugador jugador1) {
         this.jugador1 = jugador1;
     }
@@ -41,5 +53,9 @@ public class Partida {
 
     public void setTablero2(Tablero tablero2) {
         this.tablero2 = tablero2;
+    }
+
+    public void setEstadoActual(estadoPartida estadoActual) {
+        this.estadoActual = estadoActual;
     }
 }

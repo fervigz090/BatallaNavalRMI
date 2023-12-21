@@ -96,6 +96,7 @@ public class GUIJugador extends JFrame {
         btnSalirNoAutenticado.addActionListener(e -> System.exit(0));
         btnRegistrar.addActionListener(e -> realizarRegistro());
         btnLogin.addActionListener(e -> realizarLogin());
+
         btnInfoJugador.addActionListener(e -> {
             try {
                 obtenerPuntuacion();
@@ -103,12 +104,26 @@ public class GUIJugador extends JFrame {
                 throw new RuntimeException(ex);
             }
         });
+
+        btnIniciarPartida.addActionListener(e -> {
+            try {
+                Tablero tableroJugador = servicioDatos.obtenerTableroJugador(name); // Suponiendo que existe este método
+                Tablero tableroOponente = servicioDatos.obtenerTableroOponente(name); // Similarmente para el oponente
+
+                mostrarTableros(tableroJugador, tableroOponente);
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(GUIJugador.this, "Error al iniciar la partida.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
         btnSalirAutenticado.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                    realizarLogout();
             }
         });
+
 
 
         // Configuracion de colores y fuentes
@@ -179,6 +194,14 @@ public class GUIJugador extends JFrame {
         textArea.append("Jugador -> " + name + "\n");
         textArea.append("Puntuación maxima -> " + String.valueOf(servicioDatos.obtenerPuntuacion(name)) + "\n");
     }
+
+    private void mostrarTableros(Tablero tableroJugador, Tablero tableroOponente) {
+        textArea.setText("Tu Tablero:\n");
+        textArea.append(tableroJugador.toString()); // Asumiendo que Tablero tiene un método toString()
+        textArea.append("\nTablero del Oponente:\n");
+        textArea.append(tableroOponente.toString()); // Similar para el tablero del oponente
+    }
+
 
     private void realizarLogout() {
         // Limpiar o resetear el estado del usuario

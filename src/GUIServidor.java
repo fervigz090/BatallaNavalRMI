@@ -3,11 +3,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public class GUIServidor extends JFrame {
 
     private ServicioAutenticacionInterface servicioAutenticacion;
     private ServicioGestorInterface servicioGestor;
+    private ServicioDatosInterface servicioDatos;
     private JTextArea textArea;
 
     public GUIServidor() {
@@ -37,8 +40,8 @@ public class GUIServidor extends JFrame {
         try {
             servicioAutenticacion = (ServicioAutenticacionInterface) Naming.lookup("rmi://localhost/servicioAutenticacion");
         } catch (Exception e) {
-            System.err.println("Error en referencia al servicio de datos: " + e.toString());
-            textArea.append("Error conectando al servicio de datos.\n");
+            System.err.println("Error en referencia al servicio de autenticación: " + e.toString());
+            textArea.append("Error conectando al servicio de autenticación.\n");
         }
 
         try {
@@ -48,12 +51,19 @@ public class GUIServidor extends JFrame {
             textArea.append("Error conectando al servicio gestor.\n");
         }
 
+        try {
+            servicioDatos = (ServicioDatosInterface) Naming.lookup("rmi://localhost/servicioDatos");
+        } catch (Exception e) {
+            System.err.println("Error en referencia al servicio de datos: " + e.toString());
+            textArea.append("Error conectando al servicio de datos");
+        }
+
         btnInfoServidor.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 textArea.setText("");
                 textArea.append("Información del servidor\n\n");
                 // Formato de la cabecera y las filas de la tabla
-                String headerFormat = "%-20s %-30s %-10s %n"; // Ajusta el ancho según sea necesario
+                String headerFormat = "%-20s %-30s %-10s %n";
                 String rowFormat = "%-20s %-30s %-10s %n";
 
                 // Encabezado de la tabla
@@ -68,8 +78,28 @@ public class GUIServidor extends JFrame {
 
         btnEstadoPartidas.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                textArea.append("Mostrando estado de las partidas actuales...\n");
-                // Aquí puedes agregar la lógica real para mostrar estado de las partidas
+                ArrayList<Partida> list = null;
+                try {
+                    list = servicioDatos.listaPartidas();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
+                textArea.setText("");
+                textArea.append("Lista de partidas\n");
+                // Formato de la cabecera y las filas de la tabla
+                String headerFormat = "%-20s %-20s %-20s %-20s %n";
+                String rowFormat = "%-20d %-20s %-20s %-20 %n";
+                // Encabezado de la tabla
+                textArea.append(String.format(headerFormat, "Identificador", "Jugador1", "Jugador2","Estado\n"));
+
+                for (int i=0; i<list.size(); i++){
+
+                    // Filas de datos
+                    textArea.append(String.format(rowFormat, list.get(i).getId(),
+                                                             list.get(i).getJugador1(),
+                                                             list.get(i).getJugador2(),
+                                                             list.get(i).getEstadoActual()));
+                }
             }
         });
 
