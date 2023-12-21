@@ -8,7 +8,7 @@ public class ServicioAutenticacionImpl extends UnicastRemoteObject implements Se
 
     private ServicioDatosInterface servicioDatos;
 
-    protected ServicioAutenticacionImpl() throws RemoteException, MalformedURLException, NotBoundException {
+    protected ServicioAutenticacionImpl() throws RemoteException {
         super();
         try {
             servicioDatos  = (ServicioDatosInterface) Naming.lookup("rmi://localhost/servicioDatos");

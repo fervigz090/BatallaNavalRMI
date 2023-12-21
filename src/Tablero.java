@@ -22,20 +22,22 @@ public class Tablero implements Serializable {
     }
 
     // Imprime el tablero en la consola
-    public void mostrarTablero() {
-        System.out.print("  ");
+    public StringBuilder mostrarTablero() {
+        StringBuilder st = new StringBuilder();
+        st.append("  ");
         for (int i = 1; i <= columnas; i++) {
-            System.out.print(i + " ");
+            st.append(i + " ");
         }
-        System.out.println();
+        st.append("\n");
 
         for (int i = 0; i < filas; i++) {
-            System.out.print((char) ('A' + i) + " ");
+            st.append((char) ('A' + i) + " ");
             for (int j = 0; j < columnas; j++) {
-                System.out.print(casillas[i][j] + " ");
+                st.append(casillas[i][j] + " ");
             }
-            System.out.println();
+            st.append("\n");
         }
+        return st;
     }
 
     // Obtener el contenido de una casilla específica
@@ -58,17 +60,6 @@ public class Tablero implements Serializable {
         } else {
             throw new IllegalArgumentException("Coordenadas fuera del tablero.");
         }
-    }
-
-    public static void main(String[] args) {
-        Tablero tablero = new Tablero(10, 10);
-        tablero.mostrarTablero();
-
-        // Establecer el contenido de una casilla (por ejemplo, A1) como 'X'
-        tablero.establecerCasilla('A', 1, 'X');
-
-        System.out.println("\nTablero después de establecer una casilla:");
-        tablero.mostrarTablero();
     }
 }
 

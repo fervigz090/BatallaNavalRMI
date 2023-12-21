@@ -1,4 +1,6 @@
-public class Partida {
+import java.io.Serializable;
+
+public class Partida implements Serializable {
     private int id;
     private Jugador jugador1;
     private Jugador jugador2;

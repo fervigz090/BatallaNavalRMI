@@ -25,12 +25,13 @@ public class GUIJugador extends JFrame {
 
     private JTextArea textArea;
 
+    private Jugador jugador;
     private ServicioDatosInterface servicioDatos;
-    private String name = "";
+    private ServicioGestorInterface servicioGestor;
 
     public GUIJugador() {
         setTitle("Jugador - Cliente");
-        setSize(500, 400);
+        setSize(500, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
@@ -46,6 +47,12 @@ public class GUIJugador extends JFrame {
             servicioDatos = (ServicioDatosInterface) Naming.lookup("rmi://localhost/servicioDatos");
         } catch (Exception e) {
             e.printStackTrace(); // Manejar adecuadamente la excepción
+        }
+
+        try {
+            servicioGestor = (ServicioGestorInterface) Naming.lookup("rmi://localhost/servicioGestor");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -99,21 +106,21 @@ public class GUIJugador extends JFrame {
 
         btnInfoJugador.addActionListener(e -> {
             try {
-                obtenerPuntuacion();
+                textArea.append(servicioGestor.obtenerPuntuacion(jugador.getName()).toString());
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);
             }
         });
 
         btnIniciarPartida.addActionListener(e -> {
+            Partida p;
+            StringBuilder sb = new StringBuilder();
             try {
-                Tablero tableroJugador = servicioDatos.obtenerTableroJugador(name); // Suponiendo que existe este método
-                Tablero tableroOponente = servicioDatos.obtenerTableroOponente(name); // Similarmente para el oponente
-
-                mostrarTableros(tableroJugador, tableroOponente);
+                p = servicioGestor.iniciarPartida(jugador, servicioGestor.crearTablero(), servicioGestor.crearTablero());
+                sb.append(servicioGestor.obtenerTablero(p, jugador.getName()));
+                textArea.append(sb.toString());
             } catch (RemoteException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(GUIJugador.this, "Error al iniciar la partida.", "Error", JOptionPane.ERROR_MESSAGE);
+                throw new RuntimeException(ex);
             }
         });
 
@@ -164,10 +171,9 @@ public class GUIJugador extends JFrame {
 
     private void realizarRegistro() {
         String nombre = JOptionPane.showInputDialog(this, "Ingrese su nombre:");
-        String contraseña = JOptionPane.showInputDialog(this, "Ingrese su contraseña:");
-        name = nombre;
+        String pass = JOptionPane.showInputDialog(this, "Ingrese su contraseña:");
 
-        Jugador jugador = new Jugador(nombre, contraseña);
+        Jugador jugador = new Jugador(nombre, pass);
         if (jugador.registrar()) {
             JOptionPane.showMessageDialog(this, "Registro exitoso.", "Registro", JOptionPane.INFORMATION_MESSAGE);
         } else {
@@ -177,22 +183,16 @@ public class GUIJugador extends JFrame {
 
     private void realizarLogin() {
         String nombre = JOptionPane.showInputDialog(this, "Ingrese su nombre:");
-        String contraseña = JOptionPane.showInputDialog(this, "Ingrese su contraseña:");
-        name = nombre;
+        String pass = JOptionPane.showInputDialog(this, "Ingrese su contraseña:");
 
-        Jugador jugador = new Jugador(nombre, contraseña);
+        Jugador jugador = new Jugador(nombre, pass);
         if (jugador.iniciarSesion()) {
+            this.jugador = jugador;
             JOptionPane.showMessageDialog(this, "Login exitoso.", "Login", JOptionPane.INFORMATION_MESSAGE);
             mostrarPanelAutenticado();
         } else {
             JOptionPane.showMessageDialog(this, "Login fallido.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    private void obtenerPuntuacion() throws RemoteException {
-        textArea.setText("");
-        textArea.append("Jugador -> " + name + "\n");
-        textArea.append("Puntuación maxima -> " + String.valueOf(servicioDatos.obtenerPuntuacion(name)) + "\n");
     }
 
     private void mostrarTableros(Tablero tableroJugador, Tablero tableroOponente) {
@@ -201,7 +201,6 @@ public class GUIJugador extends JFrame {
         textArea.append("\nTablero del Oponente:\n");
         textArea.append(tableroOponente.toString()); // Similar para el tablero del oponente
     }
-
 
     private void realizarLogout() {
         // Limpiar o resetear el estado del usuario
@@ -213,7 +212,7 @@ public class GUIJugador extends JFrame {
     private void limpiarEstadoUsuario() {
         // Limpia el JTextArea, resetea variables, etc.
         textArea.setText("");
-        name = "";
+        jugador = null;
     }
 
 

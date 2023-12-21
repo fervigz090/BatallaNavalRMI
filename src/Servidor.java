@@ -64,20 +64,20 @@ public class Servidor {
 
             /* TEST */
             // registro de jugadores
-            System.out.println("""
-                    Registramos 2 jugadores  \s
-                    Maria - 1234  \s
-                    Rafa - 5678""");
-            Jugador j1 = new Jugador("Maria", "1234");
-            Jugador j2 = new Jugador("Rafa", "5678");
-            servicioAutenticacion.registrar(j1);
-            servicioAutenticacion.registrar(j2);
-
-            System.out.println("Comprobamos que estan en la base de datos");
-            System.out.println(servicioDatos.existe("Maria"));
-            System.out.println(servicioDatos.existe("Rafa"));
-
-            servicioDatos.listaJugadores();
+//            System.out.println("""
+//                    Registramos 2 jugadores  \s
+//                    Maria - 1234  \s
+//                    Rafa - 5678""");
+//            Jugador j1 = new Jugador("Maria", "1234");
+//            Jugador j2 = new Jugador("Rafa", "5678");
+//            servicioAutenticacion.registrar(j1);
+//            servicioAutenticacion.registrar(j2);
+//
+//            System.out.println("Comprobamos que estan en la base de datos");
+//            System.out.println(servicioDatos.existe("Maria"));
+//            System.out.println(servicioDatos.existe("Rafa"));
+//
+//            servicioDatos.listaJugadores();
 
         } catch (Exception e) {
             System.err.println("Error en el servidor: " + e.toString());

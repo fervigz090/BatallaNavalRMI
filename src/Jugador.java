@@ -16,6 +16,7 @@ public class Jugador implements Serializable {
         } catch (Exception e) {
             e.printStackTrace(); // Manejar adecuadamente la excepción
         }
+
     }
 
     public boolean registrar() {

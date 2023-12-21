@@ -79,6 +79,7 @@ public class GUIServidor extends JFrame {
         btnEstadoPartidas.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Partida> list = null;
+                String estado = "";
                 try {
                     list = servicioDatos.listaPartidas();
                 } catch (RemoteException ex) {
@@ -88,17 +89,18 @@ public class GUIServidor extends JFrame {
                 textArea.append("Lista de partidas\n");
                 // Formato de la cabecera y las filas de la tabla
                 String headerFormat = "%-20s %-20s %-20s %-20s %n";
-                String rowFormat = "%-20d %-20s %-20s %-20 %n";
+                String rowFormat = "%-20d %-20s %-20s %-20s %n";
                 // Encabezado de la tabla
                 textArea.append(String.format(headerFormat, "Identificador", "Jugador1", "Jugador2","Estado\n"));
 
                 for (int i=0; i<list.size(); i++){
-
+                    estado = String.valueOf(list.get(i).getEstadoActual());
+                    estado = estado.toLowerCase();
                     // Filas de datos
                     textArea.append(String.format(rowFormat, list.get(i).getId(),
-                                                             list.get(i).getJugador1(),
+                                                             list.get(i).getJugador1().getName(),
                                                              list.get(i).getJugador2(),
-                                                             list.get(i).getEstadoActual()));
+                                                             estado));
                 }
             }
         });

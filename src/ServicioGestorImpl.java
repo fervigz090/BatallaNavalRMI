@@ -1,5 +1,9 @@
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 
 /**
  * Este servicio se encarga de gestionar todas las operaciones de los jugadores. Crea
@@ -8,8 +12,15 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioGestorInterface {
 
+    private ServicioDatosInterface servicioDatos;
+
     protected ServicioGestorImpl() throws RemoteException {
         super();
+        try {
+            servicioDatos  = (ServicioDatosInterface) Naming.lookup("rmi://localhost/servicioDatos");
+        } catch (RemoteException | NotBoundException | MalformedURLException e) {
+            System.err.println(e.toString());
+        }
     }
 
     @Override
@@ -23,8 +34,10 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
     }
 
     @Override
-    public void iniciarPartida(Jugador jugador1, Jugador jugador2, Tablero tablero1, Tablero tablero2) throws RemoteException {
-
+    public Partida iniciarPartida(Jugador jugador1, Tablero tablero1, Tablero tablero2) throws RemoteException {
+        Partida p = new Partida(jugador1, tablero1, tablero2);
+        servicioDatos.setPartida(p);
+        return p;
     }
 
     @Override
@@ -36,4 +49,35 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
     public boolean partidaFinalizada(Tablero tablero1, Tablero tablero2) throws RemoteException {
         return false;
     }
+
+    @Override
+    public StringBuilder obtenerPuntuacion(String name) throws RemoteException {
+        StringBuilder p = new StringBuilder();
+        p.append("Jugador -> " + name + "\n");
+        p.append("Puntuación maxima -> " + String.valueOf(servicioDatos.obtenerPuntuacion(name)) + "\n");
+        return p;
+    }
+
+    @Override
+    public StringBuilder obtenerTablero(Partida p, String name) throws RemoteException {
+        StringBuilder t = new StringBuilder();
+        if (p.getJugador1().getName().equals(name)) {
+            t = p.getTablero1().mostrarTablero();
+        } else if (p.getJugador2().getName().equals(name)) {
+            t = p.getTablero2().mostrarTablero();
+        } else {
+            t.append("Error localizando el tablero: 57: ServicioGestorImpl");
+        }
+        return t;
+    }
+
+    @Override
+    public void actualizarTablero(Partida p, Tablero t, int numJugador) throws RemoteException {
+        switch (numJugador) {
+            case 1: p.setTablero1(t); break;
+            case 2: p.setTablero2(t); break;
+        }
+    }
+
+
 }
