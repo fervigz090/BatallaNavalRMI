@@ -87,19 +87,23 @@ public class GUIServidor extends JFrame {
                 }
                 textArea.setText("");
                 textArea.append("Lista de partidas\n");
+                String nombre = "null";
                 // Formato de la cabecera y las filas de la tabla
-                String headerFormat = "%-20s %-20s %-20s %-20s %n";
-                String rowFormat = "%-20d %-20s %-20s %-20s %n";
+                String headerFormat = "%-20s %-15s %-15s %-15s %n";
+                String rowFormat = "%-20d %-15s %-15s %-15s %n";
                 // Encabezado de la tabla
                 textArea.append(String.format(headerFormat, "Identificador", "Jugador1", "Jugador2","Estado\n"));
 
                 for (int i=0; i<list.size(); i++){
                     estado = String.valueOf(list.get(i).getEstadoActual());
                     estado = estado.toLowerCase();
+                    if (!estado.equals("en_espera")){
+                        nombre = list.get(i).getJugador2().getName();
+                    }
                     // Filas de datos
                     textArea.append(String.format(rowFormat, list.get(i).getId(),
                                                              list.get(i).getJugador1().getName(),
-                                                             list.get(i).getJugador2(),
+                                                             nombre,
                                                              estado));
                 }
             }

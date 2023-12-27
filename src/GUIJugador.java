@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public class GUIJugador extends JFrame {
 
@@ -26,7 +27,6 @@ public class GUIJugador extends JFrame {
     private JTextArea textArea;
 
     private Jugador jugador;
-    private ServicioDatosInterface servicioDatos;
     private ServicioGestorInterface servicioGestor;
 
     public GUIJugador() {
@@ -42,12 +42,6 @@ public class GUIJugador extends JFrame {
         setContentPane(cardPanel);
         setLocationRelativeTo(null);
         setVisible(true);
-
-        try {
-            servicioDatos = (ServicioDatosInterface) Naming.lookup("rmi://localhost/servicioDatos");
-        } catch (Exception e) {
-            e.printStackTrace(); // Manejar adecuadamente la excepción
-        }
 
         try {
             servicioGestor = (ServicioGestorInterface) Naming.lookup("rmi://localhost/servicioGestor");
@@ -115,8 +109,57 @@ public class GUIJugador extends JFrame {
         btnIniciarPartida.addActionListener(e -> {
             Partida p;
             StringBuilder sb = new StringBuilder();
+            textArea.setText("");
             try {
                 p = servicioGestor.iniciarPartida(jugador, servicioGestor.crearTablero(), servicioGestor.crearTablero());
+                sb.append(servicioGestor.obtenerTablero(p, jugador.getName()));
+                textArea.append(sb.toString());
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        btnListarPartidas.addActionListener(e -> {
+            try {
+                ArrayList<Partida> l = servicioGestor.listarPartidas();
+                textArea.setText("");
+                textArea.append("Información del servidor\n\n");
+                // Formato de la cabecera y las filas de la tabla
+                String headerFormat = "%-20s %-15s %-15s %-15s %n";
+                String rowFormat = "%-20s %-15s %-15s %-15s %n";
+                String estado;
+                String nombre = "null";
+
+                // Encabezado de la tabla
+                textArea.append(String.format(headerFormat, "Identificador", "Jugador1", "Jugador2","Estado\n"));
+
+                // Filas de datos
+                for (int i=0; i<l.size(); i++) {
+                    estado = String.valueOf(l.get(i).getEstadoActual());
+                    estado = estado.toLowerCase();
+                    if (!estado.equals("en_espera")){
+                        nombre = l.get(i).getJugador2().getName();
+                    }
+                    textArea.append(String.format(rowFormat, l.get(i).getId(),
+                                                  l.get(i).getJugador1().getName(),
+                                                  nombre,
+                                                  estado));
+                }
+
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
+
+        });
+
+        btnUnirsePartida.addActionListener(e -> {
+            String idPartida = JOptionPane.showInputDialog(this, "Ingrese id partida:");
+            StringBuilder sb = new StringBuilder();
+            Partida p;
+            textArea.setText("");
+            int id = Integer.parseInt(idPartida);
+            try {
+                p = servicioGestor.unirsePartida(id, jugador);
                 sb.append(servicioGestor.obtenerTablero(p, jugador.getName()));
                 textArea.append(sb.toString());
             } catch (RemoteException ex) {
@@ -197,9 +240,9 @@ public class GUIJugador extends JFrame {
 
     private void mostrarTableros(Tablero tableroJugador, Tablero tableroOponente) {
         textArea.setText("Tu Tablero:\n");
-        textArea.append(tableroJugador.toString()); // Asumiendo que Tablero tiene un método toString()
+        textArea.append(tableroJugador.toString());
         textArea.append("\nTablero del Oponente:\n");
-        textArea.append(tableroOponente.toString()); // Similar para el tablero del oponente
+        textArea.append(tableroOponente.toString());
     }
 
     private void realizarLogout() {

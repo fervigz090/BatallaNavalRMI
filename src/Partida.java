@@ -1,6 +1,7 @@
 import java.io.Serializable;
 
 public class Partida implements Serializable {
+    private static int contadorId = 0;
     private int id;
     private Jugador jugador1;
     private Jugador jugador2;
@@ -10,7 +11,7 @@ public class Partida implements Serializable {
     private estadoPartida estadoActual;
 
     public Partida(Jugador jugador1, Tablero t1, Tablero t2){
-        this.id += 1;
+        this.id = ++contadorId; // Incrementa contador y asigna a id
         this.jugador1 = jugador1;
         this.tablero1 = t1;
         this.tablero2 = t2;

@@ -48,12 +48,24 @@ public class ServicioDatosImpl extends UnicastRemoteObject implements ServicioDa
         RegistroPartidas.add(p);
     }
 
-    public Partida getPartida(int index){
-        return RegistroPartidas.get(index);
+    public Partida getPartida(int id){
+        Partida p = null;
+        for (int i=0; i<RegistroPartidas.size(); i++) {
+            if (RegistroPartidas.get(i).getId() == id) {
+                p = RegistroPartidas.get(i);
+            }
+        }
+        return p;
     }
 
-    public void borrarPartida(int index){
-        RegistroPartidas.remove(index);
+    @Override
+    public void borrarPartida(int id){
+        for (int i=0; i<RegistroPartidas.size(); i++) {
+            if (RegistroPartidas.get(i).getId() == id) {
+                RegistroPartidas.remove(i);
+            }
+        }
+
     }
 
     public int numeroPartidas(){

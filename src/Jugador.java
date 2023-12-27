@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.io.Serializable;
+import java.net.ServerSocket;
 import java.rmi.Naming;
+import java.rmi.registry.LocateRegistry;
 
 public class Jugador implements Serializable {
     private String name;
@@ -17,6 +19,31 @@ public class Jugador implements Serializable {
             e.printStackTrace(); // Manejar adecuadamente la excepción
         }
 
+        //Levanta el servicio CallBackJugador
+        try {
+            // Buscamos un puerto libre para el servicio
+            int puertoLibre = encontrarPuertoLibre();
+
+            // Asigna el puerto
+            LocateRegistry.createRegistry(puertoLibre);
+
+            //Usamos el nombre de jugador como identificador para cada instancia de CallBack
+            CallbackJugadorInterface cBack = new CallbackJugadorImpl();
+            Naming.rebind("rmi://localhost/cBackJugador" + this.name, cBack);
+
+            System.out.println("Servicio CallBack listo.");
+        } catch (Exception e) {
+            System.err.println("Error en el servicio CallBack: " + e);
+        }
+
+    }
+
+    public static int encontrarPuertoLibre() {
+        try (ServerSocket socket = new ServerSocket(0)){
+            return socket.getLocalPort();
+        } catch (Exception e) {
+            throw new RuntimeException("No se ha encontrado un puerto libre: " + e);
+        }
     }
 
     public boolean registrar() {

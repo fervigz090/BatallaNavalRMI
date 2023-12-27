@@ -19,9 +19,9 @@ public interface ServicioDatosInterface extends Remote {
 
     void setPartida(Partida p) throws RemoteException;
 
-    Partida getPartida(int index) throws RemoteException;
+    Partida getPartida(int id) throws RemoteException;
 
-    void borrarPartida(int index) throws RemoteException;
+    void borrarPartida(int id) throws RemoteException;
 
     int numeroPartidas() throws RemoteException;
 

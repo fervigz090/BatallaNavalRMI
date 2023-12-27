@@ -3,6 +3,7 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,6 +21,15 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
             servicioDatos  = (ServicioDatosInterface) Naming.lookup("rmi://localhost/servicioDatos");
         } catch (RemoteException | NotBoundException | MalformedURLException e) {
             System.err.println(e.toString());
+        }
+    }
+
+    public void conectarCback (String nombre) throws RemoteException {
+        try {
+            CallbackJugadorInterface cBack = (CallbackJugadorInterface) Naming.lookup("rmi://localhost/cBackJugador" + nombre);
+        } catch (Exception e) {
+            System.err.println("Error conectando a cBack de " + nombre);
+            e.printStackTrace();
         }
     }
 
@@ -77,6 +87,29 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
             case 1: p.setTablero1(t); break;
             case 2: p.setTablero2(t); break;
         }
+    }
+
+    @Override
+    public ArrayList<Partida> listarPartidas () throws RemoteException {
+        return servicioDatos.listaPartidas();
+    }
+
+    @Override
+    public Partida unirsePartida(int idPartida, Jugador jugador) throws RemoteException {
+        Partida p = servicioDatos.getPartida(idPartida);
+        if (p == null){
+            System.err.println("Error: id " + idPartida + " Partida incorrecto");
+        } else {
+            p.setJugador2(jugador);
+            actualizarPartida(idPartida, p);
+        }
+        return p;
+    }
+
+    public void actualizarPartida(int idPartida, Partida p) throws RemoteException {
+        servicioDatos.borrarPartida(idPartida);
+        servicioDatos.setPartida(p);
+
     }
 
 
