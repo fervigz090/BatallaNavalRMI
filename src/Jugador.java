@@ -87,6 +87,10 @@ public class Jugador implements Serializable {
         Puntuacion = puntuacion;
     }
 
+    public Tablero colocarBarcos(Tablero tablero){
+        return tablero;
+    }
+
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(() -> new GUIJugador());

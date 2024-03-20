@@ -13,6 +13,9 @@ public class GUIJugador extends JFrame {
 
     private JPanel panelNoAutenticado;
     private JPanel panelAutenticado;
+    private JPanel panelJugarPartida;
+    private JLabel labelEsperaContrincante;
+
 
     private JButton btnRegistrar;
     private JButton btnLogin;
@@ -77,6 +80,11 @@ public class GUIJugador extends JFrame {
         btnUnirsePartida = new JButton("Unirse a una partida iniciada");
         btnSalirAutenticado = new JButton("Salir (Logout)");
 
+        // Paneles partida
+        panelJugarPartida = new JPanel(new BorderLayout());
+        labelEsperaContrincante = new JLabel("A la espera de contrincante...", SwingConstants.CENTER);
+        panelJugarPartida.add(labelEsperaContrincante, BorderLayout.CENTER);
+
         // Establecer márgenes
         btnInfoJugador.setMargin(margins);
         btnIniciarPartida.setMargin(margins);
@@ -106,16 +114,23 @@ public class GUIJugador extends JFrame {
             }
         });
 
-        btnIniciarPartida.addActionListener(e -> {
-            Partida p;
-            StringBuilder sb = new StringBuilder();
-            textArea.setText("");
-            try {
-                p = servicioGestor.iniciarPartida(jugador, servicioGestor.crearTablero(), servicioGestor.crearTablero());
-                sb.append(servicioGestor.obtenerTablero(p, jugador.getName()));
-                textArea.append(sb.toString());
-            } catch (RemoteException ex) {
-                throw new RuntimeException(ex);
+        btnIniciarPartida.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Partida p;
+                StringBuilder sb = new StringBuilder();
+                textArea.setText("");
+                try {
+                    p = servicioGestor.iniciarPartida(jugador, servicioGestor.crearTablero(), servicioGestor.crearTablero());
+                    sb.append(servicioGestor.obtenerTablero(p, jugador.getName()));
+                    textArea.append(sb.toString());
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
+                // Cambiar a panelJugarPartida
+                cardPanel.add(panelJugarPartida, "JugarPartida");
+                cardLayout.show(cardPanel, "JugarPartida");
+                p = esperarContrincante(p);
             }
         });
 
@@ -244,6 +259,27 @@ public class GUIJugador extends JFrame {
         textArea.append("\nTablero del Oponente:\n");
         textArea.append(tableroOponente.toString());
     }
+
+    public Partida esperarContrincante(Partida p) {
+        // Lógica para esperar al contrincante.
+        while (p.getJugador2() == null){
+            try {
+                Thread.sleep(1000); // Espera 1 segundo (1000 milisegundos)
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // Restablece el estado de interrupción
+                System.out.println("La espera fue interrumpida");
+                return p;
+            }
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            labelEsperaContrincante.setText("¡Contrincante encontrado! Colocando barcos...");
+
+            // proceso de colocación de barcos y luego comienza la partida.
+        });
+        return p;
+    }
+
 
     private void realizarLogout() {
         // Limpiar o resetear el estado del usuario
