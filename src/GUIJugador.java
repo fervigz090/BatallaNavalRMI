@@ -14,18 +14,19 @@ public class GUIJugador extends JFrame {
     private JPanel panelNoAutenticado;
     private JPanel panelAutenticado;
     private JPanel panelJugarPartida;
+    private JPanel panelColocarBarcos;
     private JLabel labelEsperaContrincante;
 
 
     private JButton btnRegistrar;
     private JButton btnLogin;
     private JButton btnSalirNoAutenticado;
-
     private JButton btnInfoJugador;
     private JButton btnIniciarPartida;
     private JButton btnListarPartidas;
     private JButton btnUnirsePartida;
     private JButton btnSalirAutenticado;
+    private JButton btnConfirmarTablero;
 
     private JTextArea textArea;
 
@@ -80,6 +81,9 @@ public class GUIJugador extends JFrame {
         btnUnirsePartida = new JButton("Unirse a una partida iniciada");
         btnSalirAutenticado = new JButton("Salir (Logout)");
 
+
+
+
         // Paneles partida
         panelJugarPartida = new JPanel(new BorderLayout());
         labelEsperaContrincante = new JLabel("A la espera de contrincante...", SwingConstants.CENTER);
@@ -128,8 +132,7 @@ public class GUIJugador extends JFrame {
                     throw new RuntimeException(ex);
                 }
                 // Cambiar a panelJugarPartida
-                cardPanel.add(panelJugarPartida, "JugarPartida");
-                cardLayout.show(cardPanel, "JugarPartida");
+
                 p = esperarContrincante(p);
             }
         });
@@ -169,14 +172,12 @@ public class GUIJugador extends JFrame {
 
         btnUnirsePartida.addActionListener(e -> {
             String idPartida = JOptionPane.showInputDialog(this, "Ingrese id partida:");
-            StringBuilder sb = new StringBuilder();
             Partida p;
             textArea.setText("");
             int id = Integer.parseInt(idPartida);
             try {
-                p = servicioGestor.unirsePartida(id, jugador);
-                sb.append(servicioGestor.obtenerTablero(p, jugador.getName()));
-                textArea.append(sb.toString());
+                p = jugador.unirsePartida(id);
+                mostrarPanelColocarBarcos(p);
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);
             }
@@ -227,6 +228,29 @@ public class GUIJugador extends JFrame {
         cardLayout.show(cardPanel, "Autenticado");
     }
 
+    public void mostrarPanelColocarBarcos(Partida p) {
+        panelColocarBarcos = new JPanel(new GridLayout(2, 1));
+        btnConfirmarTablero = new JButton("Confirmar y enviar");
+        panelColocarBarcos.add(textArea, BorderLayout.NORTH);
+        panelColocarBarcos.add(btnConfirmarTablero, BorderLayout.SOUTH);
+        cardLayout.show(cardPanel, "Colocar barcos");
+        StringBuilder stCoordenadas = new StringBuilder();
+        String coordenadasBarco;
+
+        for(int i=0; i<4; i++) {
+            coordenadasBarco = JOptionPane.showInputDialog(this, "Introduzca:" +
+                    " - fila de la proa (A-J)" +
+                    " - columna de la proa (1-10)" +
+                    " - orienzacion (V/H)");
+
+            stCoordenadas.append(coordenadasBarco);
+            stCoordenadas.append("\n");
+        }
+        System.out.println(stCoordenadas.toString());
+        jugador.colocarBarcos(p, stCoordenadas);
+
+    }
+
     private void realizarRegistro() {
         String nombre = JOptionPane.showInputDialog(this, "Ingrese su nombre:");
         String pass = JOptionPane.showInputDialog(this, "Ingrese su contraseña:");
@@ -261,21 +285,20 @@ public class GUIJugador extends JFrame {
     }
 
     public Partida esperarContrincante(Partida p) {
-        // Lógica para esperar al contrincante.
-        while (p.getJugador2() == null){
-            try {
-                Thread.sleep(1000); // Espera 1 segundo (1000 milisegundos)
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt(); // Restablece el estado de interrupción
-                System.out.println("La espera fue interrumpida");
-                return p;
-            }
-        }
+
+        jugador.esperarContrincante(p);
 
         SwingUtilities.invokeLater(() -> {
-            labelEsperaContrincante.setText("¡Contrincante encontrado! Colocando barcos...");
+            labelEsperaContrincante.setText("¡Contrincante encontrado! Hora de colocar los barcos...");
+            try {
+                Thread.sleep(3000); // Espera 3 segundo
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
             // proceso de colocación de barcos y luego comienza la partida.
+            mostrarPanelColocarBarcos(p);
+
         });
         return p;
     }

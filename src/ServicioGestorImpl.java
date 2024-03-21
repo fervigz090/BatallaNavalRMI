@@ -94,7 +94,12 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
     }
 
     @Override
-    public Partida unirsePartida(int idPartida, Jugador jugador) throws RemoteException {
+    public Partida obtenerPartida(int idPartida) throws RemoteException {
+        return servicioDatos.getPartida(idPartida);
+    }
+
+    @Override
+    public Partida asignarJugador2(int idPartida, Jugador jugador) throws RemoteException {
         Partida p = servicioDatos.getPartida(idPartida);
         if (p == null){
             System.err.println("Error: id " + idPartida + " Partida incorrecto");
@@ -102,7 +107,7 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
             p.setJugador2(jugador);
             actualizarPartida(idPartida, p);
         }
-        return p;
+        return servicioDatos.getPartida(idPartida);
     }
 
     public void actualizarPartida(int idPartida, Partida p) throws RemoteException {

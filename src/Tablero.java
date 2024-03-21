@@ -21,7 +21,7 @@ public class Tablero implements Serializable {
         }
     }
 
-    // Imprime el tablero en la consola
+    // Devuelve un StringBuilder con el tablero
     public StringBuilder mostrarTablero() {
         StringBuilder st = new StringBuilder();
         st.append("  ");

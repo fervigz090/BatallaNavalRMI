@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.io.Serializable;
 import java.net.ServerSocket;
 import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
 public class Jugador implements Serializable {
@@ -9,12 +10,14 @@ public class Jugador implements Serializable {
     private String password;
     private int Puntuacion = 0;
     private ServicioAutenticacionInterface servicioAutenticacion;
+    private ServicioGestorInterface servicioGestor;
 
     public Jugador (String name, String password){
         this.name = name;
         this.password = password;
         try {
             servicioAutenticacion = (ServicioAutenticacionInterface) Naming.lookup("rmi://localhost/servicioAutenticacion");
+            servicioGestor = (ServicioGestorInterface) Naming.lookup("rmi://localhost/servicioGestor");
         } catch (Exception e) {
             e.printStackTrace(); // Manejar adecuadamente la excepción
         }
@@ -63,6 +66,32 @@ public class Jugador implements Serializable {
         }
     }
 
+    public Partida unirsePartida (int idPartida) throws RemoteException {
+        return servicioGestor.asignarJugador2(idPartida, this);
+    }
+
+    public Partida esperarContrincante(Partida p){
+
+        while (p.getJugador2() == null){
+            try {
+                Thread.sleep(1000); // Espera 1 segundo
+                System.out.println("Jugador 1 esperando contrincante!!!");
+                p = actualizarPartida(p.getId());
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // Restablece el estado de interrupción
+                System.out.println("La espera fue interrumpida");
+                return p;
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return p;
+    }
+
+    public Partida actualizarPartida(int idPartida) throws RemoteException {
+        return servicioGestor.obtenerPartida(idPartida);
+    }
+
     public String getName() {
         return name;
     }
@@ -87,8 +116,8 @@ public class Jugador implements Serializable {
         Puntuacion = puntuacion;
     }
 
-    public Tablero colocarBarcos(Tablero tablero){
-        return tablero;
+    public boolean colocarBarcos(Partida p, StringBuilder st){
+        return true;
     }
 
     public static void main(String[] args) {
