@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
+
 /**
  * Este servicio se encarga de gestionar todas las operaciones de los jugadores. Crea
  * todas las estructuras de datos necesarias para jugar la partida, gestiona la
@@ -113,7 +114,6 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
     public void actualizarPartida(int idPartida, Partida p) throws RemoteException {
         servicioDatos.borrarPartida(idPartida);
         servicioDatos.setPartida(p);
-
     }
 
 

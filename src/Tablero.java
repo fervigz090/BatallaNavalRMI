@@ -52,12 +52,12 @@ public class Tablero implements Serializable {
     }
 
     // Establecer el contenido de una casilla específica
-    public void establecerCasilla(char fila, int columna, char contenido) {
-        int rowIndex = fila - 'A';
-        int columnIndex = columna - 1;
-        if (rowIndex >= 0 && rowIndex < filas && columnIndex >= 0 && columnIndex < columnas) {
-            casillas[rowIndex][columnIndex] = contenido;
+    public Boolean establecerCasilla(int filaIndex, int columna, char contenido) {
+        if (filaIndex >= 0 && filaIndex < filas && columna >= 0 && columna < columnas) {
+            casillas[filaIndex][columna] = contenido;
+            return true;
         } else {
+            System.out.println("coordenadas: " + filaIndex + " - " + columna);
             throw new IllegalArgumentException("Coordenadas fuera del tablero.");
         }
     }

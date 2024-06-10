@@ -34,7 +34,7 @@ public class CallbackJugadorImpl extends UnicastRemoteObject implements Callback
             System.out.println("Agua!" + fila + columna);
         }
 
-        //Manejar logica del resultado del disparo del oponente en el cliente
+        //logica del resultado del disparo del oponente en el cliente
 
     }
 

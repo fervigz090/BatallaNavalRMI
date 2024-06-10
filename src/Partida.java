@@ -47,6 +47,7 @@ public class Partida implements Serializable {
     }
 
     public void setJugador2(Jugador jugador2) {
+        setEstadoActual(estadoActual.EN_CURSO);
         this.jugador2 = jugador2;
     }
 

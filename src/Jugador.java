@@ -1,4 +1,6 @@
 import javax.swing.*;
+
+
 import java.io.Serializable;
 import java.net.ServerSocket;
 import java.rmi.Naming;
@@ -72,12 +74,12 @@ public class Jugador implements Serializable {
 
     public Partida esperarContrincante(Partida p){
 
+        System.out.println("Esperando contrincante...");
+
         while (p.getJugador2() == null){
             try {
                 Thread.sleep(1000); // Espera 1 segundo
-                System.out.println("Jugador 1 esperando contrincante!!!");
                 p = actualizarPartida(p.getId());
-                System.out.println(p.getJugador2().name);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // Restablece el estado de interrupción
                 System.out.println("La espera fue interrumpida");
@@ -117,9 +119,52 @@ public class Jugador implements Serializable {
         Puntuacion = puntuacion;
     }
 
-    public boolean colocarBarcos(Partida p, StringBuilder st){
+    public boolean colocarBarcos(Partida p, StringBuilder st) {
+        Tablero tablero = new Tablero(10, 10);
+        String jugador;
+        if (p.getJugador1().getName().equals(this.name)) {
+            jugador = "jugador1";
+        } else {
+            jugador = "jugador2";
+        }
+    
+        switch (jugador) {
+            case "jugador1":
+                p.setTablero1(tablero);
+                break;
+            case "jugador2":
+                p.setTablero2(tablero);
+                break;
+        }
+    
+        // Colocar los barcos basados en las coordenadas proporcionadas
+        for (int j = 0; j < 2; j++){
+            int x = 0;
+            int filaIndex = st.charAt(x) - 'A' + 1 - 1;
+            int columnaIndex = Character.getNumericValue(st.charAt(x + 1)) - 1;
+            char orientacion = st.charAt(x + 2);
+            st.delete(0, 4);
+
+            // Colocar barco horizontal
+            if (orientacion == 'H'){
+                for (int i = 0; i < 3; i++){
+                    if (!tablero.establecerCasilla(filaIndex, columnaIndex + i, 'O')) {
+                        return false; // Si la colocación falla, retornar false
+                    }
+                }
+            // Colocar barco vertical
+            } else if (orientacion == 'V'){
+                for (int i = 0; i < 3; i++){
+                    if (!tablero.establecerCasilla(filaIndex + i, columnaIndex, 'O')) {
+                        return false; // Si la colocación falla, retornar false
+                    }   
+                }
+            }
+        }
+        System.out.println(tablero.mostrarTablero().toString());
         return true;
     }
+    
 
     public static void main(String[] args) {
 

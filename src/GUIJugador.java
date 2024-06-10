@@ -237,7 +237,7 @@ public class GUIJugador extends JFrame {
         StringBuilder stCoordenadas = new StringBuilder();
         String coordenadasBarco;
 
-        for(int i=0; i<4; i++) {
+        for(int i=0; i<2; i++) {
             coordenadasBarco = JOptionPane.showInputDialog(this, "Introduzca:" +
                     " - fila de la proa (A-J)" +
                     " - columna de la proa (1-10)" +
@@ -246,8 +246,12 @@ public class GUIJugador extends JFrame {
             stCoordenadas.append(coordenadasBarco);
             stCoordenadas.append("\n");
         }
-        System.out.println(stCoordenadas.toString());
-        jugador.colocarBarcos(p, stCoordenadas);
+        if (jugador.colocarBarcos(p, stCoordenadas)){
+            JOptionPane.showMessageDialog(this, "Barcos colocados correctamente", "Colocar barcos", JOptionPane.INFORMATION_MESSAGE);
+            // Comienza la partida
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al colocar los barcos", "Colocar barcos", JOptionPane.ERROR_MESSAGE);
+        }
 
     }
 
