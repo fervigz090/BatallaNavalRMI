@@ -77,6 +77,7 @@ public class Jugador implements Serializable {
                 Thread.sleep(1000); // Espera 1 segundo
                 System.out.println("Jugador 1 esperando contrincante!!!");
                 p = actualizarPartida(p.getId());
+                System.out.println(p.getJugador2().name);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // Restablece el estado de interrupción
                 System.out.println("La espera fue interrumpida");
