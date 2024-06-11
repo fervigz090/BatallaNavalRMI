@@ -31,7 +31,6 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
         try {
             CallbackJugadorInterface cBack = (CallbackJugadorInterface) Naming.lookup("rmi://localhost/cBackJugador/" + nombre);
             ListaCallBack.put(nombre, cBack);
-            System.out.println("Conectado y almacenado el CallBack de " + nombre);
         } catch (Exception e) {
             System.err.println("Error conectando a cBack de " + nombre);
             e.printStackTrace();
@@ -56,7 +55,24 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
     }
 
     @Override
-    public void colocarFicha(Jugador jugador, Tablero tablero, char letra, char numero) throws RemoteException {
+    public void Rondas(Partida p) throws RemoteException {
+        Jugador j1 = p.getJugador1();
+        Jugador j2 = p.getJugador2();
+        Tablero t1 = p.getTablero1();
+        Tablero t2 = p.getTablero2();
+        CallbackJugadorInterface cBack1 = ListaCallBack.get(j1.getName());
+        CallbackJugadorInterface cBack2 = ListaCallBack.get(j2.getName());
+
+        try {
+            cBack1.turnoParaDisparar();
+        } catch (RemoteException e) {
+            System.err.println("Error en inicioRondas: 116: ServicioGestorImpl");
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void realizarDisparo(Jugador jugador, Tablero tablero, char letra, char numero) throws RemoteException {
 
     }
 

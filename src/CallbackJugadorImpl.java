@@ -1,6 +1,8 @@
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import javax.swing.JOptionPane;
+
 public class CallbackJugadorImpl extends UnicastRemoteObject implements CallbackJugadorInterface{
 
     protected CallbackJugadorImpl() throws RemoteException {
@@ -18,7 +20,7 @@ public class CallbackJugadorImpl extends UnicastRemoteObject implements Callback
     @Override
     public void turnoParaDisparar() throws RemoteException {
         System.out.println("Es tu turno para disparar!");
-
+        String coordenadas = JOptionPane.showInputDialog(null, "Ingrese las coordenadas para disparar (e.g., A5):");
         //Añadir logica del juego para permitir al jugador disparar en su turno
 
     }

@@ -166,6 +166,17 @@ public class Jugador implements Serializable {
         System.out.println(tablero.mostrarTablero().toString());
         return true;
     }
+
+    private void esperarOrdenes(Boolean check){
+        while (check){
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("La espera fue interrumpida");
+            }
+        }
+    }
     
 
     public static void main(String[] args) {

@@ -251,7 +251,6 @@ public class GUIJugador extends JFrame {
     }
 
     private void mostrarPanelPartida(Partida p) {
-        labelEsperaContrincante = new JLabel("A la espera de contrincante...", SwingConstants.CENTER);
         JTextArea textAreaPartida = new JTextArea();
         JScrollPane scrollPanelJP = new JScrollPane(textAreaPartida);
         btnPausa = new JButton("Pausar partida");
@@ -270,6 +269,7 @@ public class GUIJugador extends JFrame {
             textAreaPartida.append(p.getTablero2().mostrarTablero().toString());
         }
         cardLayout.show(cardPanel, "Jugar partida");
+        
     }
 
     private void realizarRegistro() {
@@ -323,7 +323,7 @@ public class GUIJugador extends JFrame {
     }
 
     public Partida esperarContrincante(Partida p) {
-
+        labelEsperaContrincante = new JLabel("A la espera de contrincante...", SwingConstants.CENTER);
         jugador.esperarContrincante(p);
 
         SwingUtilities.invokeLater(() -> {

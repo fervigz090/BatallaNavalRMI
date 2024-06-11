@@ -18,7 +18,9 @@ public interface ServicioGestorInterface extends Remote {
 
     Partida asignarJugador2(int idPartida, Jugador jugador) throws RemoteException;
 
-    void colocarFicha(Jugador jugador, Tablero tablero, char letra, char numero) throws RemoteException;
+    void Rondas(Partida p) throws RemoteException;
+
+    void realizarDisparo(Jugador jugador, Tablero tablero, char letra, char numero) throws RemoteException;
 
     boolean partidaFinalizada(Tablero tablero1, Tablero tablero2) throws RemoteException;
 
