@@ -273,8 +273,20 @@ public class GUIJugador extends JFrame {
     }
 
     private void realizarRegistro() {
+        String pass = "";
         String nombre = JOptionPane.showInputDialog(this, "Ingrese su nombre:");
-        String pass = JOptionPane.showInputDialog(this, "Ingrese su contraseña:");
+        JPasswordField passwordField = new JPasswordField();
+        Object[] message = {
+            "Ingrese su contraseña:", passwordField
+        };
+
+        int option = JOptionPane.showConfirmDialog(this, message, "Login", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            char[] password = passwordField.getPassword();
+            pass = new String(password);
+        } else {
+            System.out.println("Login cancelado");
+        }
 
         Jugador jugador = new Jugador(nombre, pass);
         if (jugador.registrar()) {
@@ -285,8 +297,20 @@ public class GUIJugador extends JFrame {
     }
 
     private void realizarLogin() {
+        String pass = "";
         String nombre = JOptionPane.showInputDialog(this, "Ingrese su nombre:");
-        String pass = JOptionPane.showInputDialog(this, "Ingrese su contraseña:");
+        JPasswordField passwordField = new JPasswordField();
+        Object[] message = {
+            "Ingrese su contraseña", passwordField
+        };
+
+        int option = JOptionPane.showConfirmDialog(this, message, "Login", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            char[] password = passwordField.getPassword();
+            pass = new String(password);
+        } else {
+            System.out.println("Login cancelado");
+        }
 
         Jugador jugador = new Jugador(nombre, pass);
         if (jugador.iniciarSesion()) {
