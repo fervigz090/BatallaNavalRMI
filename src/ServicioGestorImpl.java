@@ -4,6 +4,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioGestorInterface {
 
     private ServicioDatosInterface servicioDatos;
+    private Map<String, CallbackJugadorInterface> ListaCallBack = new HashMap<>();
 
     protected ServicioGestorImpl() throws RemoteException {
         super();
@@ -26,7 +29,9 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
 
     public void conectarCback (String nombre) throws RemoteException {
         try {
-            CallbackJugadorInterface cBack = (CallbackJugadorInterface) Naming.lookup("rmi://localhost/cBackJugador" + nombre);
+            CallbackJugadorInterface cBack = (CallbackJugadorInterface) Naming.lookup("rmi://localhost/cBackJugador/" + nombre);
+            ListaCallBack.put(nombre, cBack);
+            System.out.println("Conectado y almacenado el CallBack de " + nombre);
         } catch (Exception e) {
             System.err.println("Error conectando a cBack de " + nombre);
             e.printStackTrace();

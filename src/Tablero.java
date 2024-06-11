@@ -4,6 +4,7 @@ public class Tablero implements Serializable {
     private int filas;
     private int columnas;
     private char[][] casillas;
+    private boolean listo = false;
 
     public Tablero(int filas, int columnas) {
         this.filas = filas;
@@ -16,7 +17,7 @@ public class Tablero implements Serializable {
     private void inicializarTablero() {
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
-                casillas[i][j] = ' ';
+                casillas[i][j] = '·';
             }
         }
     }
@@ -60,6 +61,16 @@ public class Tablero implements Serializable {
             System.out.println("coordenadas: " + filaIndex + " - " + columna);
             throw new IllegalArgumentException("Coordenadas fuera del tablero.");
         }
+    }
+
+    // Verificar si el tablero está listo
+    public boolean isListo() {
+        return listo;
+    }
+
+    // Establecer el estado del tablero
+    public void setListo(boolean listo) {
+        this.listo = listo;
     }
 }
 

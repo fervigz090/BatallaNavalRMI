@@ -161,6 +161,8 @@ public class Jugador implements Serializable {
                 }
             }
         }
+        p.getTablero1().setListo(true);
+        p.getTablero2().setListo(true);
         System.out.println(tablero.mostrarTablero().toString());
         return true;
     }

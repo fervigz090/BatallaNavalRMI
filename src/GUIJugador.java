@@ -26,7 +26,7 @@ public class GUIJugador extends JFrame {
     private JButton btnListarPartidas;
     private JButton btnUnirsePartida;
     private JButton btnSalirAutenticado;
-    private JButton btnConfirmarTablero;
+    private JButton btnPausa;
 
     private JTextArea textArea;
 
@@ -74,20 +74,15 @@ public class GUIJugador extends JFrame {
         textArea.setEditable(false);
         JScrollPane scrollPanel = new JScrollPane(textArea);
 
+        // Paneles partida
+        panelJugarPartida = new JPanel(new BorderLayout());
+
         JPanel botonPanel = new JPanel(new GridLayout(5, 1));
         btnInfoJugador = new JButton("Información del jugador");
         btnIniciarPartida = new JButton("Iniciar una partida");
         btnListarPartidas = new JButton("Listar partidas a la espera");
         btnUnirsePartida = new JButton("Unirse a una partida iniciada");
         btnSalirAutenticado = new JButton("Salir (Logout)");
-
-
-
-
-        // Paneles partida
-        panelJugarPartida = new JPanel(new BorderLayout());
-        labelEsperaContrincante = new JLabel("A la espera de contrincante...", SwingConstants.CENTER);
-        panelJugarPartida.add(labelEsperaContrincante, BorderLayout.CENTER);
 
         // Establecer márgenes
         btnInfoJugador.setMargin(margins);
@@ -131,9 +126,10 @@ public class GUIJugador extends JFrame {
                 } catch (RemoteException ex) {
                     throw new RuntimeException(ex);
                 }
-                // Cambiar a panelJugarPartida
-
+                
                 p = esperarContrincante(p);
+
+                mostrarPanelColocarBarcos(p);
             }
         });
 
@@ -186,7 +182,7 @@ public class GUIJugador extends JFrame {
         btnSalirAutenticado.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                   realizarLogout();
+                realizarLogout();
             }
         });
 
@@ -194,7 +190,6 @@ public class GUIJugador extends JFrame {
 
         // Configuracion de colores y fuentes
         Color backgroundColor = new Color(42, 42, 42);
-        Color buttonColor = new Color(120, 120, 120);
         Color textColor = new Color(145, 248, 160);
         Font retroFont = new Font("Courier New", Font.PLAIN, 14);
         // Aplicar estilos retro a los componentes
@@ -216,7 +211,7 @@ public class GUIJugador extends JFrame {
 
         cardPanel.add(panelNoAutenticado, "NoAutenticado");
         cardPanel.add(panelAutenticado, "Autenticado");
-
+        cardPanel.add(panelJugarPartida, "Jugar partida");
     }
 
     // Métodos para cambiar entre paneles
@@ -225,14 +220,14 @@ public class GUIJugador extends JFrame {
     }
 
     public void mostrarPanelAutenticado() {
+        setTitle(jugador.getName() + " - Batalla Naval");
         cardLayout.show(cardPanel, "Autenticado");
     }
 
     public void mostrarPanelColocarBarcos(Partida p) {
         panelColocarBarcos = new JPanel(new GridLayout(2, 1));
-        btnConfirmarTablero = new JButton("Confirmar y enviar");
         panelColocarBarcos.add(textArea, BorderLayout.NORTH);
-        panelColocarBarcos.add(btnConfirmarTablero, BorderLayout.SOUTH);
+        cardPanel.add(panelColocarBarcos, "Colocar barcos");
         cardLayout.show(cardPanel, "Colocar barcos");
         StringBuilder stCoordenadas = new StringBuilder();
         String coordenadasBarco;
@@ -248,11 +243,33 @@ public class GUIJugador extends JFrame {
         }
         if (jugador.colocarBarcos(p, stCoordenadas)){
             JOptionPane.showMessageDialog(this, "Barcos colocados correctamente", "Colocar barcos", JOptionPane.INFORMATION_MESSAGE);
-            // Comienza la partida
+            mostrarPanelPartida(p);
         } else {
             JOptionPane.showMessageDialog(this, "Error al colocar los barcos", "Colocar barcos", JOptionPane.ERROR_MESSAGE);
         }
 
+    }
+
+    private void mostrarPanelPartida(Partida p) {
+        labelEsperaContrincante = new JLabel("A la espera de contrincante...", SwingConstants.CENTER);
+        JTextArea textAreaPartida = new JTextArea();
+        JScrollPane scrollPanelJP = new JScrollPane(textAreaPartida);
+        btnPausa = new JButton("Pausar partida");
+        panelJugarPartida.add(scrollPanelJP, BorderLayout.CENTER);
+        panelJugarPartida.add(textAreaPartida, BorderLayout.CENTER);
+        panelJugarPartida.add(btnPausa, BorderLayout.PAGE_END);
+        textAreaPartida.setEditable(false);
+        textAreaPartida.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        textAreaPartida.setBackground(new Color (42, 42, 42));
+        textAreaPartida.setForeground(new Color(145, 248, 160));
+        textAreaPartida.setFont(new Font("Courier New", Font.BOLD, 32));
+        textAreaPartida.setText("");
+        if (p.getJugador1().getName().equals(jugador.getName())){
+            textAreaPartida.append(p.getTablero1().mostrarTablero().toString());
+        } else {
+            textAreaPartida.append(p.getTablero2().mostrarTablero().toString());
+        }
+        cardLayout.show(cardPanel, "Jugar partida");
     }
 
     private void realizarRegistro() {
@@ -281,13 +298,6 @@ public class GUIJugador extends JFrame {
         }
     }
 
-    private void mostrarTableros(Tablero tableroJugador, Tablero tableroOponente) {
-        textArea.setText("Tu Tablero:\n");
-        textArea.append(tableroJugador.toString());
-        textArea.append("\nTablero del Oponente:\n");
-        textArea.append(tableroOponente.toString());
-    }
-
     public Partida esperarContrincante(Partida p) {
 
         jugador.esperarContrincante(p);
@@ -299,10 +309,6 @@ public class GUIJugador extends JFrame {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-
-            // proceso de colocación de barcos y luego comienza la partida.
-            mostrarPanelColocarBarcos(p);
-
         });
         return p;
     }
