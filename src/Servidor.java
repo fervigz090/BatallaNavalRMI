@@ -6,7 +6,7 @@ public class Servidor {
     public static void main(String[] args) {
 
         try {
-            //Iniciamos el registro RMI en el puerto 1098
+            //Iniciamos el registro RMI en el puerto 1095
             LocateRegistry.createRegistry(1095);
 
             //Creamos una instancia del servicio gestor e indicamos su url

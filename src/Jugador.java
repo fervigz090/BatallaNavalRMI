@@ -11,6 +11,7 @@ public class Jugador implements Serializable {
     private String name;
     private String password;
     private int Puntuacion = 0;
+    private static int port = 0;
     private ServicioAutenticacionInterface servicioAutenticacion;
     private ServicioGestorInterface servicioGestor;
 
@@ -34,7 +35,8 @@ public class Jugador implements Serializable {
 
             //Usamos el nombre de jugador como identificador para cada instancia de CallBack
             CallbackJugadorInterface cBack = new CallbackJugadorImpl();
-            Naming.rebind("rmi://localhost/cBackJugador" + this.name, cBack);
+            cBack.setJugador(this);
+            Naming.rebind("rmi://localhost/cBackJugador/" + this.name, cBack);
 
             System.out.println("Servicio CallBack listo.");
         } catch (Exception e) {
@@ -45,7 +47,8 @@ public class Jugador implements Serializable {
 
     public static int encontrarPuertoLibre() {
         try (ServerSocket socket = new ServerSocket(0)){
-            return socket.getLocalPort();
+            port = socket.getLocalPort();
+            return port;
         } catch (Exception e) {
             throw new RuntimeException("No se ha encontrado un puerto libre: " + e);
         }
@@ -97,6 +100,10 @@ public class Jugador implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public int getPort() {
+        return port;
     }
 
     public void setName(String name) {
@@ -167,18 +174,17 @@ public class Jugador implements Serializable {
         return true;
     }
 
-    private void esperarOrdenes(Boolean check){
-        while (check){
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.out.println("La espera fue interrumpida");
-            }
+    public void iniciarPartida(Partida p) {
+        try {
+            servicioGestor.Rondas(p);
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
-    
 
+    public String disparar(StringBuilder st) {
+        return name;
+    }
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(() -> new GUIJugador());

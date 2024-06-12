@@ -6,6 +6,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 
 /**
@@ -16,10 +17,11 @@ import java.util.Map;
 public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioGestorInterface {
 
     private ServicioDatosInterface servicioDatos;
-    private Map<String, CallbackJugadorInterface> ListaCallBack = new HashMap<>();
+    private Map<String, CallbackJugadorInterface> ListaCallBack;
 
     protected ServicioGestorImpl() throws RemoteException {
         super();
+        ListaCallBack = new HashMap<>();
         try {
             servicioDatos  = (ServicioDatosInterface) Naming.lookup("rmi://localhost/servicioDatos");
         } catch (RemoteException | NotBoundException | MalformedURLException e) {
@@ -56,15 +58,32 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
 
     @Override
     public void Rondas(Partida p) throws RemoteException {
-        Jugador j1 = p.getJugador1();
-        Jugador j2 = p.getJugador2();
-        Tablero t1 = p.getTablero1();
-        Tablero t2 = p.getTablero2();
+        Partida pAux = servicioDatos.getPartida(p.getId());
+        conectarCback(pAux.getJugador1().getName());
+        conectarCback(pAux.getJugador2().getName());
+        String coordenadas = " ";
+        Jugador j1 = pAux.getJugador1();
+        Jugador j2 = pAux.getJugador2();
+        Tablero t1 = pAux.getTablero1();
+        Tablero t2 = pAux.getTablero2();
         CallbackJugadorInterface cBack1 = ListaCallBack.get(j1.getName());
-        CallbackJugadorInterface cBack2 = ListaCallBack.get(j2.getName());
+
+        if (j2 == null) {
+            throw new NullPointerException("Jugador 2 es null");
+        }
+        if (t1 == null) {
+            throw new NullPointerException("Tablero de Jugador 1 es null");
+        }
+        if (t2 == null) {
+            throw new NullPointerException("Tablero de Jugador 2 es null");
+        }
+        if (cBack1 == null) {
+            throw new NullPointerException("Callback de Jugador 1 es null");
+        }
 
         try {
-            cBack1.turnoParaDisparar();
+            coordenadas = cBack1.turnoParaDisparar();
+            System.out.println("Coordenadas: " + coordenadas);
         } catch (RemoteException e) {
             System.err.println("Error en inicioRondas: 116: ServicioGestorImpl");
             e.printStackTrace();

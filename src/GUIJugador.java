@@ -130,6 +130,19 @@ public class GUIJugador extends JFrame {
                 p = esperarContrincante(p);
 
                 mostrarPanelColocarBarcos(p);
+                try {
+                    jugador.actualizarPartida(p.getId());
+                } catch (RemoteException e1) {
+                    e1.printStackTrace();
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e2){
+                    throw new RuntimeException(e2);
+                
+                }
+
+                jugador.iniciarPartida(p);
             }
         });
 
@@ -269,7 +282,13 @@ public class GUIJugador extends JFrame {
             textAreaPartida.append(p.getTablero2().mostrarTablero().toString());
         }
         cardLayout.show(cardPanel, "Jugar partida");
-        
+        while (!(p.getTablero1().isListo() && p.getTablero2().isListo())){
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e){
+            
+            }
+        }
     }
 
     private void realizarRegistro() {
@@ -336,7 +355,6 @@ public class GUIJugador extends JFrame {
         });
         return p;
     }
-
 
     private void realizarLogout() {
         // Limpiar o resetear el estado del usuario

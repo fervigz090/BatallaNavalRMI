@@ -1,12 +1,29 @@
+import java.awt.Button;
+import java.awt.TextArea;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 public class CallbackJugadorImpl extends UnicastRemoteObject implements CallbackJugadorInterface{
 
+    Jugador jugador;
+
     protected CallbackJugadorImpl() throws RemoteException {
         super();
+    }
+
+    @Override
+    public void setJugador(Jugador jugador) throws RemoteException {
+        this.jugador = jugador;
+    }
+
+    @Override
+    public Jugador getJugador() throws RemoteException {
+        return jugador;
     }
 
     @Override
@@ -18,10 +35,23 @@ public class CallbackJugadorImpl extends UnicastRemoteObject implements Callback
     }
 
     @Override
-    public void turnoParaDisparar() throws RemoteException {
+    public String turnoParaDisparar() throws RemoteException {
         System.out.println("Es tu turno para disparar!");
-        String coordenadas = JOptionPane.showInputDialog(null, "Ingrese las coordenadas para disparar (e.g., A5):");
-        //Añadir logica del juego para permitir al jugador disparar en su turno
+        final String[] coordenadas = new String[1];
+        coordenadas[0] = JOptionPane.showInputDialog(jugador.getName() + ": Introduce las coordenadas para disparar (ejemplo: A1) ");
+        
+        // try {
+        //     SwingUtilities.invokeAndWait(new Runnable() {
+        //         @Override
+        //         public void run() {
+        //         coordenadas[0] = JOptionPane.showInputDialog(jugador.getName() + ": Introduce las coordenadas para disparar (ejemplo: A1) ");
+        //         }
+        //     });
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        // }
+
+        return coordenadas[0];
 
     }
 
