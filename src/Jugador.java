@@ -12,12 +12,14 @@ public class Jugador implements Serializable {
     private String password;
     private int Puntuacion = 0;
     private static int port = 0;
+    private final String[] coordenadasAtaque;
     private ServicioAutenticacionInterface servicioAutenticacion;
     private ServicioGestorInterface servicioGestor;
 
     public Jugador (String name, String password){
         this.name = name;
         this.password = password;
+        this.coordenadasAtaque = new String[1];
         try {
             servicioAutenticacion = (ServicioAutenticacionInterface) Naming.lookup("rmi://localhost/servicioAutenticacion");
             servicioGestor = (ServicioGestorInterface) Naming.lookup("rmi://localhost/servicioGestor");
@@ -114,6 +116,14 @@ public class Jugador implements Serializable {
         return password;
     }
 
+    public String getCoordenadas() {
+        return coordenadasAtaque[0];
+    }
+
+    public void setCoordenadas(String coordenadas) {
+        this.coordenadasAtaque[0] = coordenadas;
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }
@@ -128,18 +138,18 @@ public class Jugador implements Serializable {
 
     public boolean colocarBarcos(Partida p, StringBuilder st) {
         Tablero tablero = new Tablero(10, 10);
-        String jugador;
+        char jugador;
         if (p.getJugador1().getName().equals(this.name)) {
-            jugador = "jugador1";
+            jugador = '1';
         } else {
-            jugador = "jugador2";
+            jugador = '2';
         }
     
         switch (jugador) {
-            case "jugador1":
+            case '1':
                 p.setTablero1(tablero);
                 break;
-            case "jugador2":
+            case '2':
                 p.setTablero2(tablero);
                 break;
         }
@@ -170,11 +180,19 @@ public class Jugador implements Serializable {
         }
         p.getTablero1().setListo(true);
         p.getTablero2().setListo(true);
-        System.out.println(tablero.mostrarTablero().toString());
+        
+        try {
+            servicioGestor.actualizarTablero(p, tablero, jugador);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Tablero en clase jugador(1): " + name + ": " + p.getTablero1().mostrarTablero());
+        System.out.println("Tablero en clase jugador(2): " + name + ": " + p.getTablero2().mostrarTablero());
         return true;
     }
 
     public void iniciarPartida(Partida p) {
+        p.set_en_curso();
         try {
             servicioGestor.Rondas(p);
         } catch (RemoteException e) {
@@ -182,9 +200,6 @@ public class Jugador implements Serializable {
         }
     }
 
-    public String disparar(StringBuilder st) {
-        return name;
-    }
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(() -> new GUIJugador());

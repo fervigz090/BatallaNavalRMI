@@ -38,8 +38,8 @@ public class Partida implements Serializable {
         return tablero2;
     }
 
-    public estadoPartida getEstadoActual() {
-        return estadoActual;
+    public String getEstadoActual() {
+        return estadoActual.toString();
     }
 
     public void setJugador1(Jugador jugador1) {
@@ -47,7 +47,6 @@ public class Partida implements Serializable {
     }
 
     public void setJugador2(Jugador jugador2) {
-        setEstadoActual(estadoActual.EN_CURSO);
         this.jugador2 = jugador2;
     }
 
@@ -61,5 +60,21 @@ public class Partida implements Serializable {
 
     public void setEstadoActual(estadoPartida estadoActual) {
         this.estadoActual = estadoActual;
+    }
+
+    public void set_en_espera(){
+        setEstadoActual(estadoPartida.EN_ESPERA);
+    }
+
+    public void set_en_curso() {
+        setEstadoActual(estadoPartida.EN_CURSO);
+    }
+
+    public void set_pausada() {
+        setEstadoActual(estadoActual.PAUSADA);
+    }
+
+    public void set_terminada() {
+        setEstadoActual(estadoActual.TERMINADA);
     }
 }

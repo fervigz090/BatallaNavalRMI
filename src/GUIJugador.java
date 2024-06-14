@@ -117,24 +117,22 @@ public class GUIJugador extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Partida p;
-                StringBuilder sb = new StringBuilder();
                 textArea.setText("");
                 try {
                     p = servicioGestor.iniciarPartida(jugador, servicioGestor.crearTablero(), servicioGestor.crearTablero());
-                    sb.append(servicioGestor.obtenerTablero(p, jugador.getName()));
-                    textArea.append(sb.toString());
+                    textArea.append("Esperando contrincante!!");
                 } catch (RemoteException ex) {
                     throw new RuntimeException(ex);
                 }
                 
                 p = esperarContrincante(p);
 
-                mostrarPanelColocarBarcos(p);
                 try {
                     jugador.actualizarPartida(p.getId());
                 } catch (RemoteException e1) {
                     e1.printStackTrace();
                 }
+                
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e2){
@@ -142,7 +140,12 @@ public class GUIJugador extends JFrame {
                 
                 }
 
+                cardLayout.show(cardPanel, "Jugar partida");
+
                 jugador.iniciarPartida(p);
+                
+                
+
             }
         });
 
@@ -342,17 +345,9 @@ public class GUIJugador extends JFrame {
     }
 
     public Partida esperarContrincante(Partida p) {
-        labelEsperaContrincante = new JLabel("A la espera de contrincante...", SwingConstants.CENTER);
         jugador.esperarContrincante(p);
-
-        SwingUtilities.invokeLater(() -> {
-            labelEsperaContrincante.setText("¡Contrincante encontrado! Hora de colocar los barcos...");
-            try {
-                Thread.sleep(3000); // Espera 3 segundo
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        JOptionPane.showMessageDialog(this, "Contrincante encontrado!! Coloca los barcos!!", "Aviso!", JOptionPane.INFORMATION_MESSAGE);
+        mostrarPanelColocarBarcos(p);
         return p;
     }
 
