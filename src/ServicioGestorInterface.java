@@ -20,7 +20,7 @@ public interface ServicioGestorInterface extends Remote {
 
     String realizarDisparo(Jugador jugador, Tablero tablero, String coordenadas) throws RemoteException;
 
-    boolean partidaFinalizada(Tablero tablero1, Tablero tablero2) throws RemoteException;
+    boolean partidaFinalizada(Jugador jugador) throws RemoteException;
 
     StringBuilder obtenerPuntuacion(String name) throws RemoteException;
 

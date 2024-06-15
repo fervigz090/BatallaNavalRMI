@@ -1,13 +1,7 @@
-import java.awt.Button;
-import java.awt.TextArea;
-import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 public class CallbackJugadorImpl extends UnicastRemoteObject implements CallbackJugadorInterface{
 
@@ -47,49 +41,6 @@ public class CallbackJugadorImpl extends UnicastRemoteObject implements Callback
         System.out.println("Es tu turno para disparar!");
         final String[] coordenadas = new String[1];
 
-        // final Runnable disparar = new Runnable() {
-        //     public String getCoordenadas() {
-        //         return jugador.getCoordenadas();
-        //     }
-        //     @Override
-        //     public void run() {
-        //         coordenadas[0] = JOptionPane.showInputDialog(null, jugador.getName() + ": Introduce las coordenadas para disparar (ejemplo: A1) ");
-        //         jugador.setCoordenadas(coordenadas[0]);
-        //         System.out.println("Coordenadas introducidas (1): " + coordenadas[0]);
-        //     }
-        // };
-
-        // // Crear un hilo para pedir las coordenadas
-        // Thread pedirCoordenadas = new Thread(){
-        //     public void run(){
-        //         try {
-        //             SwingUtilities.invokeAndWait(disparar);
-        //         } catch (InvocationTargetException e) {
-        //             e.printStackTrace();
-        //         } catch (InterruptedException e) {
-        //             e.printStackTrace();
-        //         }
-        //     }
-        // };
-        // pedirCoordenadas.start();
-
-        // // // Volver a unir los hilos
-        // // try {
-        // //     pedirCoordenadas.join(1000);
-        // // } catch (InterruptedException e) {
-        // //     e.printStackTrace();
-        // // }
-
-        // while (jugador.getCoordenadas() == null) {
-        //     try {
-        //         Thread.sleep(1000);
-        //     } catch (InterruptedException e) {
-        //         e.printStackTrace();
-        //     }
-        // }
-        // coordenadas[0] = jugador.getCoordenadas();
-
-        // System.out.println("Coordenadas introducidas (2): " + coordenadas[0]);
 
         return coordenadas[0];
 

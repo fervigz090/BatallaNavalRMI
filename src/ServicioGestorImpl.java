@@ -6,16 +6,9 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-
 import javax.swing.JOptionPane;
 
 
-/**
- * Este servicio se encarga de gestionar todas las operaciones de los jugadores. Crea
- * todas las estructuras de datos necesarias para jugar la partida, gestiona la
- * logica de juego, informa a los jugadores del fin de partida, puntuiaciones, etc.
- */
 public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioGestorInterface {
 
     private ServicioDatosInterface servicioDatos;
@@ -30,9 +23,6 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
         } catch (RemoteException | NotBoundException | MalformedURLException e) {
             System.err.println(e.toString());
         }
-        // Lanzar el hilo que ejecutará comprobarPartidas()
-        // thread = new Thread(this::comprobarPartidas);
-        // thread.start();
         
     }
 
@@ -121,7 +111,7 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
             throw new NullPointerException("Callback de Jugador 1 es null");
         }
 
-        while (!partidaFinalizada(t1, t2)) {
+        while (!partidaFinalizada(atacante)) {
             // Realizar disparo
             coordenadas = JOptionPane.showInputDialog(null, atacante.getName() + ": Introduce las coordenadas para disparar (ejemplo: A1) ");
             System.out.println("Coordenadas: " + coordenadas);
@@ -131,6 +121,7 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
             System.out.println(t1.mostrarTablero().toString());
             System.out.println(t2.mostrarTablero().toString());
             System.out.println("Resultado: " + resultado);
+            JOptionPane.showMessageDialog(null, resultado);
 
             // Cambiar turno
             aux = atacante;
@@ -146,9 +137,9 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
             // Actualizar partida en BD
             actualizarPartida(p.getId(), p);
         }
-
+        p.set_terminada();
+        JOptionPane.showMessageDialog(null, "Partida finalizada! el ganador es: " + atacante.getName());
         
-
     }
 
     @Override
@@ -161,8 +152,10 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
 
         if (tablero.obtenerCasilla(fila, columnaIndex) == 'O') {
             tablero.establecerCasilla(filaIndex - 1, columnaIndex - 1, 'X');
+            jugador.setPuntuacion(jugador.getPuntuacion() + 1);
             resultado = "Impacto!";
         } else {
+            tablero.establecerCasilla(filaIndex - 1, columnaIndex - 1, ' ');
             resultado = "Agua!";
         }
 
@@ -170,7 +163,10 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
     }
 
     @Override
-    public boolean partidaFinalizada(Tablero tablero1, Tablero tablero2) throws RemoteException {
+    public boolean partidaFinalizada(Jugador j) throws RemoteException {
+        if (j.getPuntuacion() == 6) {
+            return true;
+        }
         return false;
     }
 

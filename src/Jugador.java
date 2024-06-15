@@ -206,18 +206,6 @@ public class Jugador implements Serializable {
                 }
             });
             thread.start();
-
-
-            // Runnable tarea = new Runnable() {
-            //     @Override
-            //     public void run() {
-            //         p.getJugador1().iniciarPartida(p);
-            //         System.out.println("Ejecutando sentencia en segundo plano...");
-            //     }
-            // };
-            // tarea.run();
-            
-            
         }
 
         System.out.println("Tableros listos: " + p.getTablero1().isListo() + " " + p.getTablero2().isListo());
@@ -259,26 +247,6 @@ public class Jugador implements Serializable {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-
-
-        // Runnable tarea = new Runnable() {
-        //     @Override
-        //     public void run() {
-        //         System.out.println("Ejecutando sentencia en segundo plano...");
-        //         try {
-        //             servicioGestor.Rondas(p);
-        //         } catch (RemoteException e) {
-        //             e.printStackTrace();
-        //         }
-        //     }
-        // };
-        // tarea.run();
-
-        // try {
-        //     servicioGestor.Rondas(p);
-        // } catch (RemoteException e) {
-        //     e.printStackTrace();
-        // }
     }
 
     public void setTablero(Tablero tablero) {
