@@ -196,15 +196,20 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
     }
 
     @Override
-    public void actualizarTablero(Partida p, Tablero t, char numJugador) throws RemoteException {
+    public void actualizarTablero(Partida p, Tablero t, int numJugador) throws RemoteException {
+        Partida pAux = servicioDatos.getPartida(p.getId());
         switch (numJugador) {
-            case '1':
+            case 1:
                 p.setTablero1(t);
+                p.setTablero2(pAux.getTablero2());
                 break;
-            case '2':
+            case 2:
                 p.setTablero2(t);
+                p.setTablero1(pAux.getTablero1());
                 break;
         }
+
+        actualizarPartida(p.getId(), pAux);
     }
 
     @Override
@@ -217,21 +222,15 @@ public class ServicioGestorImpl extends UnicastRemoteObject implements ServicioG
         return servicioDatos.getPartida(idPartida);
     }
 
-    @Override
-    public Partida asignarJugador2(int idPartida, Jugador jugador) throws RemoteException {
-        Partida p = servicioDatos.getPartida(idPartida);
-        if (p == null){
-            System.err.println("Error: id " + idPartida + " Partida incorrecto");
-        } else {
-            p.setJugador2(jugador);
-            actualizarPartida(idPartida, p);
-        }
-        return servicioDatos.getPartida(idPartida);
-    }
-
     public void actualizarPartida(int idPartida, Partida p) throws RemoteException {
         servicioDatos.borrarPartida(idPartida);
         servicioDatos.setPartida(p);
+        p = servicioDatos.getPartida(idPartida);
+        try {
+            System.out.println("Partida actualizada: " + p.getJugador1().getName() + p.getTablero1().toString() + " vs " + p.getJugador2().getName() + p.getTablero2().toString());
+        } catch (NullPointerException e) {
+            System.err.println("Error actualizando partida: " + e.toString());
+        }
     }
 
 }

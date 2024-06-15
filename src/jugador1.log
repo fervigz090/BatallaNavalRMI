@@ -1,18 +1,20 @@
 Servicio CallBack listo.
 Servicio CallBack listo.
-Tablero en clase jugador(1): aida:   1 2 3 4 5 6 7 8 9 10 
-A · · · · · · · · · · 
+aida2 ha colocado sus barcos.
+Iniciando partida en Jugador: ivan vs aida
+Tableros listos: false true
+  1 2 3 4 5 6 7 8 9 10 
+A · · · O O O · · · · 
 B · · · · · · · · · · 
-C · · · · · · · · · · 
-D · · · · · · · · · · 
-E · · · · · · · · · · 
+C · O · · · · · · · · 
+D · O · · · · · · · · 
+E · O · · · · · · · · 
 F · · · · · · · · · · 
 G · · · · · · · · · · 
 H · · · · · · · · · · 
 I · · · · · · · · · · 
 J · · · · · · · · · · 
-
-Tablero en clase jugador(2): aida:   1 2 3 4 5 6 7 8 9 10 
+   1 2 3 4 5 6 7 8 9 10 
 A · · · · · · · · · · 
 B · · · · · · · · · · 
 C · · · · · · · · · · 

@@ -16,8 +16,6 @@ public interface ServicioGestorInterface extends Remote {
 
     Partida obtenerPartida(int idPartida) throws RemoteException;
 
-    Partida asignarJugador2(int idPartida, Jugador jugador) throws RemoteException;
-
     void Rondas(Partida p) throws RemoteException;
 
     String realizarDisparo(Jugador jugador, Tablero tablero, String coordenadas) throws RemoteException;
@@ -28,7 +26,7 @@ public interface ServicioGestorInterface extends Remote {
 
     StringBuilder obtenerTablero(Partida p, String name) throws RemoteException;
 
-    void actualizarTablero(Partida p, Tablero t, char numJugador) throws RemoteException;
+    void actualizarTablero(Partida p, Tablero t, int numJugador) throws RemoteException;
 
     void actualizarPartida(int id, Partida p) throws RemoteException;
 

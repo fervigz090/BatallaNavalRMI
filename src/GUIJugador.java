@@ -125,7 +125,15 @@ public class GUIJugador extends JFrame {
                     throw new RuntimeException(ex);
                 }
                 
-                p = esperarContrincante(p);
+                p.setJugador2(esperarContrincante(p));
+
+                try {
+                    mostrarPanelColocarBarcos(p);
+                } catch (HeadlessException e1) {
+                    e1.printStackTrace();
+                } catch (RemoteException e1) {
+                    e1.printStackTrace();
+                }
 
                 try {
                     jugador.actualizarPartida(p.getId());
@@ -140,12 +148,15 @@ public class GUIJugador extends JFrame {
                 
                 }
 
-                cardLayout.show(cardPanel, "Jugar partida");
+                try {
+                    servicioGestor.actualizarTablero(p, jugador.getTablero(), jugador.getNumJugador());
+                } catch (RemoteException e1) {
+                    e1.printStackTrace();
+                }
 
-                jugador.iniciarPartida(p);
-                
-                
 
+                System.out.println("Ambos tableros listos, iniciando partida");
+                System.out.println(p.getJugador1().toString() + p.getJugador2().toString());
             }
         });
 
@@ -184,14 +195,26 @@ public class GUIJugador extends JFrame {
 
         btnUnirsePartida.addActionListener(e -> {
             String idPartida = JOptionPane.showInputDialog(this, "Ingrese id partida:");
-            Partida p;
             textArea.setText("");
             int id = Integer.parseInt(idPartida);
+            Partida p = null;
             try {
-                p = jugador.unirsePartida(id);
-                mostrarPanelColocarBarcos(p);
+                p = servicioGestor.obtenerPartida(id);
+            } catch (RemoteException e1) {
+                e1.printStackTrace();
+            }
+            try {
+                jugador.unirsePartida(p);
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);
+            }
+            try {
+                mostrarPanelColocarBarcos(p);
+                
+            } catch (HeadlessException e1) {
+                e1.printStackTrace();
+            } catch (RemoteException e1) {
+                e1.printStackTrace();
             }
         });
 
@@ -240,7 +263,7 @@ public class GUIJugador extends JFrame {
         cardLayout.show(cardPanel, "Autenticado");
     }
 
-    public void mostrarPanelColocarBarcos(Partida p) {
+    public void mostrarPanelColocarBarcos(Partida p) throws HeadlessException, RemoteException {
         panelColocarBarcos = new JPanel(new GridLayout(2, 1));
         panelColocarBarcos.add(textArea, BorderLayout.NORTH);
         cardPanel.add(panelColocarBarcos, "Colocar barcos");
@@ -279,19 +302,18 @@ public class GUIJugador extends JFrame {
         textAreaPartida.setForeground(new Color(145, 248, 160));
         textAreaPartida.setFont(new Font("Courier New", Font.BOLD, 32));
         textAreaPartida.setText("");
+        
         if (p.getJugador1().getName().equals(jugador.getName())){
             textAreaPartida.append(p.getTablero1().mostrarTablero().toString());
         } else {
             textAreaPartida.append(p.getTablero2().mostrarTablero().toString());
         }
-        cardLayout.show(cardPanel, "Jugar partida");
-        while (!(p.getTablero1().isListo() && p.getTablero2().isListo())){
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e){
-            
-            }
+        try {
+            servicioGestor.actualizarPartida(p.getId(), p);
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
+        cardLayout.show(cardPanel, "Jugar partida");
     }
 
     private void realizarRegistro() {
@@ -344,11 +366,11 @@ public class GUIJugador extends JFrame {
         }
     }
 
-    public Partida esperarContrincante(Partida p) {
-        jugador.esperarContrincante(p);
+    public Jugador esperarContrincante(Partida p) {
+        Jugador j2 = jugador.esperarContrincante(p);
         JOptionPane.showMessageDialog(this, "Contrincante encontrado!! Coloca los barcos!!", "Aviso!", JOptionPane.INFORMATION_MESSAGE);
-        mostrarPanelColocarBarcos(p);
-        return p;
+        
+        return j2;
     }
 
     private void realizarLogout() {

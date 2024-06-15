@@ -10,8 +10,11 @@ import java.rmi.registry.LocateRegistry;
 public class Jugador implements Serializable {
     private String name;
     private String password;
+    private int numJugador;
     private int Puntuacion = 0;
     private static int port = 0;
+    private Tablero tablero;
+    private Tablero tableroContrincante;
     private final String[] coordenadasAtaque;
     private ServicioAutenticacionInterface servicioAutenticacion;
     private ServicioGestorInterface servicioGestor;
@@ -19,6 +22,9 @@ public class Jugador implements Serializable {
     public Jugador (String name, String password){
         this.name = name;
         this.password = password;
+        this.numJugador = 1;
+        this.tablero = new Tablero(10, 10);
+        this.tableroContrincante = new Tablero(10, 10);
         this.coordenadasAtaque = new String[1];
         try {
             servicioAutenticacion = (ServicioAutenticacionInterface) Naming.lookup("rmi://localhost/servicioAutenticacion");
@@ -73,11 +79,16 @@ public class Jugador implements Serializable {
         }
     }
 
-    public Partida unirsePartida (int idPartida) throws RemoteException {
-        return servicioGestor.asignarJugador2(idPartida, this);
+    public void unirsePartida (Partida p) throws RemoteException {
+        this.setNumJugador(2);
+        p.setJugador2(this);
+        Jugador jugador1 = p.getJugador1();
+        jugador1.setNumJugador(1);
+        p.setJugador1(jugador1);
+        servicioGestor.actualizarPartida(p.getId(), p);
     }
 
-    public Partida esperarContrincante(Partida p){
+    public Jugador esperarContrincante(Partida p){
 
         System.out.println("Esperando contrincante...");
 
@@ -88,12 +99,12 @@ public class Jugador implements Serializable {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // Restablece el estado de interrupción
                 System.out.println("La espera fue interrumpida");
-                return p;
+                return p.getJugador2();
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
         }
-        return p;
+        return p.getJugador2();
     }
 
     public Partida actualizarPartida(int idPartida) throws RemoteException {
@@ -136,24 +147,8 @@ public class Jugador implements Serializable {
         Puntuacion = puntuacion;
     }
 
-    public boolean colocarBarcos(Partida p, StringBuilder st) {
-        Tablero tablero = new Tablero(10, 10);
-        char jugador;
-        if (p.getJugador1().getName().equals(this.name)) {
-            jugador = '1';
-        } else {
-            jugador = '2';
-        }
-    
-        switch (jugador) {
-            case '1':
-                p.setTablero1(tablero);
-                break;
-            case '2':
-                p.setTablero2(tablero);
-                break;
-        }
-    
+    public boolean colocarBarcos(Partida p, StringBuilder st) throws RemoteException {
+        
         // Colocar los barcos basados en las coordenadas proporcionadas
         for (int j = 0; j < 2; j++){
             int x = 0;
@@ -178,26 +173,136 @@ public class Jugador implements Serializable {
                 }
             }
         }
-        p.getTablero1().setListo(true);
-        p.getTablero2().setListo(true);
-        
-        try {
-            servicioGestor.actualizarTablero(p, tablero, jugador);
-        } catch (RemoteException e) {
-            e.printStackTrace();
+
+        System.out.println(this.getName() + this.getNumJugador() + " ha colocado sus barcos.");
+        if (this.getNumJugador() == 1) {
+            tablero.setListo(true);
+            this.setTablero(tablero);
+            p.setJugador1(this);
+            p.setTablero1(this.tablero);
+            servicioGestor.actualizarPartida(p.getId(), p);
+        } else if (this.getNumJugador() == 2) {
+            while (!p.getJugador1().getTablero().isListo() || !p.getJugador1().getTableroContrincante().isListo()){
+                tablero.setListo(true);
+                this.setTablero(tablero);
+                Jugador jugador1 = servicioGestor.obtenerPartida(p.getId()).getJugador1();
+                jugador1.setTableroContrincante(tablero);
+                p.setJugador1(jugador1);
+                p.setJugador2(this);
+                p.setTablero2(tablero);
+                servicioGestor.actualizarPartida(p.getId(), p);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    p.getJugador1().iniciarPartida(p);
+                    System.out.println("Ejecutando sentencia en segundo plano...");
+                }
+            });
+            thread.start();
+
+
+            // Runnable tarea = new Runnable() {
+            //     @Override
+            //     public void run() {
+            //         p.getJugador1().iniciarPartida(p);
+            //         System.out.println("Ejecutando sentencia en segundo plano...");
+            //     }
+            // };
+            // tarea.run();
+            
+            
         }
-        System.out.println("Tablero en clase jugador(1): " + name + ": " + p.getTablero1().mostrarTablero());
-        System.out.println("Tablero en clase jugador(2): " + name + ": " + p.getTablero2().mostrarTablero());
+
+        System.out.println("Tableros listos: " + p.getTablero1().isListo() + " " + p.getTablero2().isListo());
+        
         return true;
     }
 
     public void iniciarPartida(Partida p) {
+        // setNumJugador(1);
+        p.setJugador1(this);
+        System.out.println("Iniciando partida en Jugador: " + p.getJugador1().getName() + " vs " + p.getJugador2().getName());
         p.set_en_curso();
+
+        System.out.println(tablero.mostrarTablero().toString() + " " + tableroContrincante.mostrarTablero().toString());
+
+
+        while (!tablero.isListo() || !tableroContrincante.isListo()){
+            System.out.println("Esperando a que ambos jugadores coloquen sus barcos...");
+            System.out.println(tablero.mostrarTablero().toString() + " " + tableroContrincante.mostrarTablero().toString());
+            try {
+                Thread.sleep(1000); // Espera 1 segundo
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // Restablece el estado de interrupción
+                System.out.println("La espera fue interrumpida");
+            }
+            try {
+                servicioGestor.actualizarPartida(p.getId(), p);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            tableroContrincante = p.getJugador2().getTablero();
+        }
+
         try {
+            p.setTablero1(tablero);
+            p.setTablero2(tableroContrincante);
+            servicioGestor.actualizarPartida(p.getId(), p);
             servicioGestor.Rondas(p);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
+
+        // Runnable tarea = new Runnable() {
+        //     @Override
+        //     public void run() {
+        //         System.out.println("Ejecutando sentencia en segundo plano...");
+        //         try {
+        //             servicioGestor.Rondas(p);
+        //         } catch (RemoteException e) {
+        //             e.printStackTrace();
+        //         }
+        //     }
+        // };
+        // tarea.run();
+
+        // try {
+        //     servicioGestor.Rondas(p);
+        // } catch (RemoteException e) {
+        //     e.printStackTrace();
+        // }
+    }
+
+    public void setTablero(Tablero tablero) {
+        this.tablero = tablero;
+    }
+
+    public Tablero getTablero() {
+        return tablero;
+    }
+
+    public void setTableroContrincante(Tablero tableroContrincante) {
+        this.tableroContrincante = tableroContrincante;
+    }
+
+    public Tablero getTableroContrincante() {
+        return tableroContrincante;
+    }
+
+    public void setNumJugador(int numJugador) {
+        this.numJugador = numJugador;
+    }
+
+    public int getNumJugador() {
+        return numJugador;
     }
 
     public static void main(String[] args) {

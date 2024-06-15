@@ -97,7 +97,7 @@ public class GUIServidor extends JFrame {
                 for (int i=0; i<list.size(); i++){
                     estado = String.valueOf(list.get(i).getEstadoActual());
                     estado = estado.toLowerCase();
-                    if (!estado.equals("en_espera")){
+                    if (!(list.get(i).getJugador2() == null)){
                         nombre = list.get(i).getJugador2().getName();
                     }
                     // Filas de datos

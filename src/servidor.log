@@ -1,5 +1,17 @@
 Servicio Gestor listo.
 Servicio Autenticacion listo.
+Partida actualizada: ivanTablero@7c81b81e vs aidaTablero@646da6a0
+Partida actualizada: ivanTablero@6fb9b79e vs aidaTablero@67b72316
+Partida actualizada: ivanTablero@c59ab7 vs aidaTablero@1b9fea5a
+Partida actualizada: ivanTablero@450e3c72 vs aidaTablero@3163e735
+Partida actualizada: ivanTablero@4340d536 vs aidaTablero@18323541
+Partida actualizada: ivanTablero@249313de vs aidaTablero@3d5dd175
+Partida actualizada: ivanTablero@6ed9b778 vs aidaTablero@7418b32
+Partida actualizada: ivanTablero@6f2a530a vs aidaTablero@548001b9
+Partida actualizada: ivanTablero@16bdcc6b vs aidaTablero@2bbef4fd
+Partida actualizada: ivanTablero@48354ae5 vs aidaTablero@739ea5b3
+Partida actualizada: ivanTablero@4935787 vs aidaTablero@760514e
+Partida actualizada: ivanTablero@6ba28f58 vs aidaTablero@5d1ee09b
 Ronda (datos inicio): ivan  1 2 3 4 5 6 7 8 9 10 
 A · · · O O O · · · · 
 B · · · · · · · · · · 
@@ -15,116 +27,12 @@ J · · · · · · · · · ·
 A · · · · · · · · · · 
 B · · · · · · · · · · 
 C · · · · · · · · · · 
-D · · · · · · · · · · 
-E · · · · · · · · · · 
-F · · · · · · · · · · 
+D · · · O · · · · · · 
+E · · · O · · · · · · 
+F · · · O · · · · · · 
 G · · · · · · · · · · 
-H · · · · · · · · · · 
+H · O O O · · · · · · 
 I · · · · · · · · · · 
 J · · · · · · · · · · 
 
-Coordenadas: H2
-  1 2 3 4 5 6 7 8 9 10 
-A · · · O O O · · · · 
-B · · · · · · · · · · 
-C · O · · · · · · · · 
-D · O · · · · · · · · 
-E · O · · · · · · · · 
-F · · · · · · · · · · 
-G · · · · · · · · · · 
-H · · · · · · · · · · 
-I · · · · · · · · · · 
-J · · · · · · · · · · 
-
-  1 2 3 4 5 6 7 8 9 10 
-A · · · · · · · · · · 
-B · · · · · · · · · · 
-C · · · · · · · · · · 
-D · · · · · · · · · · 
-E · · · · · · · · · · 
-F · · · · · · · · · · 
-G · · · · · · · · · · 
-H · · · · · · · · · · 
-I · · · · · · · · · · 
-J · · · · · · · · · · 
-
-Resultado: Agua!
-Coordenadas: H2
-  1 2 3 4 5 6 7 8 9 10 
-A · · · · · · · · · · 
-B · · · · · · · · · · 
-C · · · · · · · · · · 
-D · · · · · · · · · · 
-E · · · · · · · · · · 
-F · · · · · · · · · · 
-G · · · · · · · · · · 
-H · · · · · · · · · · 
-I · · · · · · · · · · 
-J · · · · · · · · · · 
-
-  1 2 3 4 5 6 7 8 9 10 
-A · · · O O O · · · · 
-B · · · · · · · · · · 
-C · O · · · · · · · · 
-D · O · · · · · · · · 
-E · O · · · · · · · · 
-F · · · · · · · · · · 
-G · · · · · · · · · · 
-H · · · · · · · · · · 
-I · · · · · · · · · · 
-J · · · · · · · · · · 
-
-Resultado: Agua!
-Coordenadas: C2
-  1 2 3 4 5 6 7 8 9 10 
-A · · · O O O · · · · 
-B · · · · · · · · · · 
-C · O · · · · · · · · 
-D · O · · · · · · · · 
-E · O · · · · · · · · 
-F · · · · · · · · · · 
-G · · · · · · · · · · 
-H · · · · · · · · · · 
-I · · · · · · · · · · 
-J · · · · · · · · · · 
-
-  1 2 3 4 5 6 7 8 9 10 
-A · · · · · · · · · · 
-B · · · · · · · · · · 
-C · · · · · · · · · · 
-D · · · · · · · · · · 
-E · · · · · · · · · · 
-F · · · · · · · · · · 
-G · · · · · · · · · · 
-H · · · · · · · · · · 
-I · · · · · · · · · · 
-J · · · · · · · · · · 
-
-Resultado: Agua!
-Coordenadas: C2
-  1 2 3 4 5 6 7 8 9 10 
-A · · · · · · · · · · 
-B · · · · · · · · · · 
-C · · · · · · · · · · 
-D · · · · · · · · · · 
-E · · · · · · · · · · 
-F · · · · · · · · · · 
-G · · · · · · · · · · 
-H · · · · · · · · · · 
-I · · · · · · · · · · 
-J · · · · · · · · · · 
-
-  1 2 3 4 5 6 7 8 9 10 
-A · · · O O O · · · · 
-B · · · · · · · · · · 
-C · X · · · · · · · · 
-D · O · · · · · · · · 
-E · O · · · · · · · · 
-F · · · · · · · · · · 
-G · · · · · · · · · · 
-H · · · · · · · · · · 
-I · · · · · · · · · · 
-J · · · · · · · · · · 
-
-Resultado: Impacto!
-Coordenadas: 
+Partida actualizada: ivanTablero@1969788e vs aidaTablero@4fd4107f
